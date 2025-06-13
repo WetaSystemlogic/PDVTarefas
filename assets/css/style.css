@@ -7,3 +7,8 @@ body {
 .card {
     cursor: pointer;
 }
+.card-placeholder {
+    border: 2px dashed #ccc;
+    height: 60px;
+    margin-bottom: 0.5rem;
+}

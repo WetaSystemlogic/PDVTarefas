@@ -3,7 +3,7 @@ require 'config.php';
 
 // Busca tarefas do banco de dados
 function obterTarefasPorStatus($pdo, $status) {
-    $stmt = $pdo->prepare("SELECT t.id, t.titulo, t.detalhes, r.nome AS responsavel FROM tarefas t LEFT JOIN responsaveis r ON t.responsavel_id = r.id WHERE status = ? ORDER BY t.id DESC");
+    $stmt = $pdo->prepare("SELECT t.id, t.titulo, t.detalhes, t.created_at, r.nome AS responsavel FROM tarefas t LEFT JOIN responsaveis r ON t.responsavel_id = r.id WHERE status = ? ORDER BY t.id DESC");
     $stmt->execute([$status]);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -39,15 +39,37 @@ foreach ($statuses as $s) {
         <?php foreach ($statuses as $status): ?>
         <div class="col-md-2 col-12 mb-3">
             <h5 class="text-center text-white p-2 bg-primary"><?= htmlspecialchars($status) ?></h5>
+            <div class="tarefa-col" data-status="<?= htmlspecialchars($status) ?>">
             <?php foreach ($tarefas[$status] as $tarefa): ?>
-            <div class="card mb-2" data-id="<?= $tarefa['id'] ?>" data-bs-toggle="modal" data-bs-target="#detalhesModal" onclick="carregarDetalhes(<?= $tarefa['id'] ?>)">
-                <div class="card-body p-2">
-                    <h6 class="card-title mb-1"><?= htmlspecialchars($tarefa['titulo']) ?></h6>
-                    <p class="mb-1 small"><?= htmlspecialchars($tarefa['detalhes']) ?></p>
-                    <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></span></p>
+                <?php
+                    $diff = (new DateTime($tarefa['created_at']))->diff(new DateTime())->days;
+                    if ($diff == 0) {
+                        $tempo = 'Normal';
+                        $badge = 'success';
+                    } elseif ($diff == 1) {
+                        $tempo = 'Atrasada';
+                        $badge = 'warning';
+                    } elseif ($diff == 2) {
+                        $tempo = 'Muito atrasada';
+                        $badge = 'danger';
+                    } elseif ($diff > 5) {
+                        $tempo = 'Urgente muito atrasada';
+                        $badge = 'dark';
+                    } else {
+                        $tempo = 'Muito atrasada';
+                        $badge = 'danger';
+                    }
+                ?>
+                <div class="card mb-2 tarefa-card" data-id="<?= $tarefa['id'] ?>" data-bs-toggle="modal" data-bs-target="#detalhesModal" onclick="carregarDetalhes(<?= $tarefa['id'] ?>)">
+                    <div class="card-body p-2">
+                        <h6 class="card-title mb-1"><?= htmlspecialchars($tarefa['titulo']) ?></h6>
+                        <p class="mb-1 small"><?= htmlspecialchars($tarefa['detalhes']) ?></p>
+                        <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></span></p>
+                        <p class="mb-0 mt-1"><span class="badge bg-<?= $badge ?>"><?= $tempo ?></span></p>
+                    </div>
                 </div>
-            </div>
             <?php endforeach; ?>
+            </div>
         </div>
         <?php endforeach; ?>
     </div>
@@ -93,6 +115,10 @@ foreach ($statuses as $s) {
             }
             ?>
           </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Data e Hora de Criação</label>
+          <input type="datetime-local" class="form-control" name="created_at" value="<?= date('Y-m-d\TH:i') ?>">
         </div>
       </div>
       <div class="modal-footer">
@@ -179,6 +205,8 @@ foreach ($statuses as $s) {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/app.js"></script>
 </body>
