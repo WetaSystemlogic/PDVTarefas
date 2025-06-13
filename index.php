@@ -11,8 +11,11 @@ function obterTarefasPorStatus($pdo, $status) {
 $statuses = ['A fazer', 'Fazendo', 'Agendado', 'Aguardando', 'Finalizado'];
 $tarefas = [];
 foreach ($statuses as $s) {
-    $tarefas[$s] = obterTarefasPorStatus($pdo, $s);
+  $tarefas[$s] = obterTarefasPorStatus($pdo, $s);
 }
+
+$responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
+$clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -94,12 +97,11 @@ foreach ($statuses as $s) {
           <textarea class="form-control" name="detalhes"></textarea>
         </div>
         <div class="mb-3">
-          <label class="form-label">Responsável</label>
+        <label class="form-label">Responsável</label>
           <select class="form-select" name="responsavel_id">
             <option value="">Selecione...</option>
             <?php
-            $resp = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($resp as $r) {
+            foreach ($responsaveis as $r) {
                 echo '<option value="'.$r['id'].'">'.htmlspecialchars($r['nome']).'</option>';
             }
             ?>
@@ -107,15 +109,8 @@ foreach ($statuses as $s) {
         </div>
         <div class="mb-3">
           <label class="form-label">Cliente</label>
-          <select class="form-select" name="cliente_id">
-            <option value="">Selecione...</option>
-            <?php
-            $cli = $pdo->query('SELECT id, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
-            foreach ($cli as $c) {
-                echo '<option value="'.$c['id'].'">'.htmlspecialchars($c['nome']).'</option>';
-            }
-            ?>
-          </select>
+          <input type="hidden" name="cliente_id" id="cliente_id">
+          <input type="text" class="form-control" id="clienteBusca" placeholder="Digite o nome ou CNPJ">
         </div>
         <div class="mb-3">
           <label class="form-label">Data e Hora de Criação</label>
@@ -211,6 +206,9 @@ foreach ($statuses as $s) {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
+<script>
+var clientesData = <?php echo json_encode($clientes); ?>;
+</script>
 <script src="assets/js/app.js"></script>
 </body>
 </html>
