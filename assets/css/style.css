@@ -1,0 +1,9 @@
+body {
+    background-color: #f8f9fa;
+}
+.navbar, h5.bg-primary {
+    background-color: #131f45 !important;
+}
+.card {
+    cursor: pointer;
+}
