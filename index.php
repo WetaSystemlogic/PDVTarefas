@@ -110,7 +110,16 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
         <div class="mb-3">
           <label class="form-label">Cliente</label>
           <input type="hidden" name="cliente_id" id="cliente_id">
-          <input type="text" class="form-control" id="clienteBusca" placeholder="Digite o nome ou CNPJ">
+          <div class="dropdown" id="clienteDropdown">
+            <button class="form-select text-start" type="button" id="clienteDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">Selecione...</button>
+            <ul class="dropdown-menu w-100" id="clienteDropdownMenu" aria-labelledby="clienteDropdownBtn">
+              <li class="px-3"><input type="text" class="form-control" id="clienteFiltro" placeholder="Buscar..."></li>
+              <li><hr class="dropdown-divider"></li>
+              <?php foreach ($clientes as $c): ?>
+              <li><a class="dropdown-item" href="#" data-id="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?> (<?= htmlspecialchars($c['cnpj']) ?>)</a></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
         </div>
         <div class="mb-3">
           <label class="form-label">Data e Hora de Criação</label>

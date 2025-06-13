@@ -116,22 +116,20 @@ $(function() {
     });
 
     if(typeof clientesData !== 'undefined'){
-        var clientesMap = clientesData.map(function(c){
-            return {label: c.nome + ' (' + c.cnpj + ')', value: c.id};
+        $('#clienteFiltro').on('keyup', function(){
+            var termo = $(this).val().toLowerCase();
+            $('#clienteDropdownMenu a.dropdown-item').each(function(){
+                var txt = $(this).text().toLowerCase();
+                $(this).toggle(txt.indexOf(termo) !== -1);
+            });
         });
-        $('#clienteBusca').autocomplete({
-            source: clientesMap,
-            minLength: 0,
-            select: function(event, ui){
-                $('#cliente_id').val(ui.item.value);
-            },
-            change: function(event, ui){
-                if(!ui.item){
-                    $('#cliente_id').val('');
-                }
-            }
-        }).on('focus', function(){
-            $(this).autocomplete('search', $(this).val());
+
+        $('#clienteDropdownMenu').on('click', 'a.dropdown-item', function(e){
+            e.preventDefault();
+            var nome = $(this).text();
+            var id = $(this).data('id');
+            $('#clienteDropdownBtn').text(nome);
+            $('#cliente_id').val(id);
         });
     }
 });
