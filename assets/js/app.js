@@ -1,6 +1,9 @@
 function carregarDetalhes(id) {
     $.get('detalhes_tarefa.php', {id: id}, function(data) {
         $('#detalhesConteudo').html(data);
+        if (typeof Quill !== 'undefined') {
+            window.quill = new Quill('#comentarioEditor', {theme: 'snow'});
+        }
     });
 }
 
@@ -38,6 +41,50 @@ $(function() {
                 location.reload();
             }
         }, 'json');
+    });
+
+    // Atualização de detalhes
+    $(document).on('submit', '#formTarefaDetalhes', function(e){
+        e.preventDefault();
+        $.post('atualizar_tarefa.php', $(this).serialize(), function(resp){
+            if(resp.success){
+                $('#detalhesModal').modal('hide');
+                location.reload();
+            }
+        }, 'json');
+    });
+
+    // Salvar comentário
+    $(document).on('click', '#btnSalvarComentario', function(){
+        var id = $('#formTarefaDetalhes input[name=id]').val();
+        var texto = window.quill.root.innerHTML;
+        $.post('salvar_comentario.php', {tarefa_id: id, texto: texto}, function(resp){
+            if(resp.success){
+                carregarDetalhes(id);
+            }
+        }, 'json');
+    });
+
+    // Excluir tarefa
+    $(document).on('click', '#btnExcluirTarefa', function(){
+        var id = $('#formTarefaDetalhes input[name=id]').val();
+        var titulo = $('#detalhesTitulo').val();
+        Swal.fire({
+            title: 'Excluir "'+titulo+'"?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não'
+        }).then(function(result){
+            if(result.isConfirmed){
+                $.post('excluir_tarefa.php', {id:id}, function(resp){
+                    if(resp.success){
+                        $('#detalhesModal').modal('hide');
+                        location.reload();
+                    }
+                }, 'json');
+            }
+        });
     });
 
     // Drag and drop das tarefas

@@ -27,6 +27,12 @@ $queries = [
         tarefa_id INTEGER NOT NULL,
         descricao TEXT NOT NULL,
         concluida INTEGER NOT NULL DEFAULT 0
+    );",
+    "CREATE TABLE IF NOT EXISTS comentarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tarefa_id INTEGER NOT NULL,
+        texto TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );"
 ];
 
