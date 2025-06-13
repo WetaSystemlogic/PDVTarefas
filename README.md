@@ -26,3 +26,6 @@ Projeto simples de controle de tarefas em PHP com layout responsivo utilizando B
 3. Acesse `index.php` em seu servidor web para visualizar o kanban e cadastrar novas tarefas.
 
 As cores principais do layout são `#131f45` e branco, garantindo boa visualização em desktop e dispositivos móveis.
+
+### Favicon
+O arquivo `favicon.ico` já está incluído na raiz do projeto. A página `index.php` referencia esse ícone no elemento `<head>` para exibição pelo navegador. Caso deseje personalizar o ícone, substitua o arquivo `favicon.ico` por outro de sua escolha e recarregue a aplicação.
