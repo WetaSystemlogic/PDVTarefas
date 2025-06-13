@@ -10,7 +10,9 @@ function carregarDetalhes(id) {
 $(function() {
     $('#formResponsavel').on('submit', function(e) {
         e.preventDefault();
-        $.post('salvar_responsavel.php', $(this).serialize(), function(resp) {
+        var id = $(this).find('input[name=id]').val();
+        var url = id ? 'atualizar_responsavel.php' : 'salvar_responsavel.php';
+        $.post(url, $(this).serialize(), function(resp) {
             if (resp.success) {
                 $('#responsavelModal').modal('hide');
                 location.reload();
@@ -22,7 +24,9 @@ $(function() {
 
     $('#formCliente').on('submit', function(e) {
         e.preventDefault();
-        $.post('salvar_cliente.php', $(this).serialize(), function(resp) {
+        var id = $(this).find('input[name=id]').val();
+        var url = id ? 'atualizar_cliente.php' : 'salvar_cliente.php';
+        $.post(url, $(this).serialize(), function(resp) {
             if (resp.success) {
                 $('#clienteModal').modal('hide');
                 location.reload();
@@ -113,6 +117,85 @@ $(function() {
             e.preventDefault();
             e.stopImmediatePropagation();
         }
+    });
+
+    // Responsáveis
+    $(document).on('click', '#btnNovoResponsavel', function(){
+        $('#formResponsavel')[0].reset();
+        $('#formResponsavel input[name=id]').val('');
+        $('#responsavelModal .modal-title').text('Cadastrar Responsável');
+        $('#listaResponsavelModal').modal('hide');
+        $('#responsavelModal').modal('show');
+    });
+
+    $(document).on('click', '.btn-editar-resp', function(){
+        var tr = $(this).closest('tr');
+        $('#formResponsavel input[name=id]').val(tr.data('id'));
+        $('#formResponsavel input[name=nome]').val(tr.data('nome'));
+        $('#responsavelModal .modal-title').text('Editar Responsável');
+        $('#listaResponsavelModal').modal('hide');
+        $('#responsavelModal').modal('show');
+    });
+
+    $(document).on('click', '.btn-excluir-resp', function(){
+        var tr = $(this).closest('tr');
+        var id = tr.data('id');
+        var nome = tr.data('nome');
+        Swal.fire({
+            title: 'Excluir "'+nome+'"?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não'
+        }).then(function(res){
+            if(res.isConfirmed){
+                $.post('excluir_responsavel.php', {id:id}, function(resp){
+                    if(resp.success){
+                        location.reload();
+                    }
+                }, 'json');
+            }
+        });
+    });
+
+    // Clientes
+    $(document).on('click', '#btnNovoCliente', function(){
+        $('#formCliente')[0].reset();
+        $('#formCliente input[name=id]').val('');
+        $('#clienteModal .modal-title').text('Cadastrar Cliente');
+        $('#listaClienteModal').modal('hide');
+        $('#clienteModal').modal('show');
+    });
+
+    $(document).on('click', '.btn-editar-cliente', function(){
+        var tr = $(this).closest('tr');
+        $('#formCliente input[name=id]').val(tr.data('id'));
+        $('#formCliente input[name=cnpj]').val(tr.data('cnpj'));
+        $('#formCliente input[name=nome]').val(tr.data('nome'));
+        $('#clienteModal .modal-title').text('Editar Cliente');
+        $('#listaClienteModal').modal('hide');
+        $('#clienteModal').modal('show');
+    });
+
+    $(document).on('click', '.btn-excluir-cliente', function(){
+        var tr = $(this).closest('tr');
+        var id = tr.data('id');
+        var nome = tr.data('nome');
+        Swal.fire({
+            title: 'Excluir "'+nome+'"?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não'
+        }).then(function(res){
+            if(res.isConfirmed){
+                $.post('excluir_cliente.php', {id:id}, function(resp){
+                    if(resp.success){
+                        location.reload();
+                    }
+                }, 'json');
+            }
+        });
     });
 
     if(typeof clientesData !== 'undefined'){
