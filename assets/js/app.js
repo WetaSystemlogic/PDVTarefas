@@ -41,13 +41,29 @@ $(function() {
     });
 
     // Drag and drop das tarefas
+    var isDragging = false;
     $('.tarefa-col').sortable({
         connectWith: '.tarefa-col',
         placeholder: 'card-placeholder',
+        start: function() {
+            isDragging = true;
+        },
+        stop: function() {
+            // pequeno delay para diferenciar clique de arraste
+            setTimeout(function(){ isDragging = false; }, 100);
+        },
         receive: function(event, ui) {
             var id = ui.item.data('id');
             var status = $(this).data('status');
             $.post('atualizar_status.php', {id: id, status: status});
         }
     }).disableSelection();
+
+    // Impede abertura do modal quando o card está sendo arrastado
+    $(document).on('click', '.tarefa-card', function(e){
+        if(isDragging){
+            e.preventDefault();
+            e.stopImmediatePropagation();
+        }
+    });
 });
