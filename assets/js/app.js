@@ -221,7 +221,7 @@ $(function() {
     var paginaAtual = 1;
 
     function atualizarPaginacao(){
-        var linhas = $('#listaClienteModal tbody tr:visible');
+        var linhas = $('#listaClienteModal tbody tr').not('.filtrado');
         var totalPaginas = Math.ceil(linhas.length / tamPagina) || 1;
         if(paginaAtual > totalPaginas){ paginaAtual = totalPaginas; }
         linhas.hide();
@@ -236,7 +236,8 @@ $(function() {
         $('#listaClienteModal tbody tr').each(function(){
             var cnpj = String($(this).data('cnpj')).toLowerCase();
             var nome = String($(this).data('nome')).toLowerCase();
-            $(this).toggle(cnpj.indexOf(termo) !== -1 || nome.indexOf(termo) !== -1);
+            var match = cnpj.indexOf(termo) !== -1 || nome.indexOf(termo) !== -1;
+            $(this).toggle(match).toggleClass('filtrado', !match);
         });
         paginaAtual = 1;
         atualizarPaginacao();
@@ -252,7 +253,7 @@ $(function() {
 
     $('#btnNextCliente').on('click', function(e){
         e.preventDefault();
-        var totalPaginas = Math.ceil($('#listaClienteModal tbody tr:visible').length / tamPagina) || 1;
+        var totalPaginas = Math.ceil($('#listaClienteModal tbody tr').not('.filtrado').length / tamPagina) || 1;
         if(paginaAtual < totalPaginas){
             paginaAtual++;
             atualizarPaginacao();
@@ -262,7 +263,7 @@ $(function() {
     $('#listaClienteModal').on('shown.bs.modal', function(){
         paginaAtual = 1;
         $('#clienteBusca').val('');
-        $('#listaClienteModal tbody tr').show();
+        $('#listaClienteModal tbody tr').show().removeClass('filtrado');
         atualizarPaginacao();
     });
 });
