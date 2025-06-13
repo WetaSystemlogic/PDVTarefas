@@ -29,6 +29,7 @@ foreach ($statuses as $s) {
         <a class="navbar-brand" href="#">PDVTarefas</a>
         <div class="d-flex">
             <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#novaTarefaModal">Nova Tarefa</button>
+            <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#cadastroModal">Cadastro</button>
             <button class="btn btn-light">Configurações</button>
         </div>
     </div>
@@ -92,6 +93,72 @@ foreach ($statuses as $s) {
             }
             ?>
           </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Cadastro -->
+<div class="modal fade" id="cadastroModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cadastro</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body text-center">
+        <button class="btn btn-primary me-2" data-bs-target="#responsavelModal" data-bs-toggle="modal" data-bs-dismiss="modal">Responsável</button>
+        <button class="btn btn-primary" data-bs-target="#clienteModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cliente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Responsável -->
+<div class="modal fade" id="responsavelModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="formResponsavel">
+      <div class="modal-header">
+        <h5 class="modal-title">Cadastrar Responsável</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="respAlert"></div>
+        <div class="mb-3">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-control" name="nome" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Cliente -->
+<div class="modal fade" id="clienteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="formCliente">
+      <div class="modal-header">
+        <h5 class="modal-title">Cadastrar Cliente</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="cliAlert"></div>
+        <div class="mb-3">
+          <label class="form-label">CNPJ</label>
+          <input type="text" class="form-control" name="cnpj" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-control" name="nome" required>
         </div>
       </div>
       <div class="modal-footer">

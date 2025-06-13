@@ -9,6 +9,7 @@ $queries = [
     );",
     "CREATE TABLE IF NOT EXISTS clientes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        cnpj TEXT UNIQUE,
         nome TEXT NOT NULL
     );",
     "CREATE TABLE IF NOT EXISTS tarefas (
