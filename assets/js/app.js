@@ -215,4 +215,54 @@ $(function() {
             $('#cliente_id').val(id);
         });
     }
+
+    // Filtro e paginação da lista de clientes
+    var tamPagina = 5;
+    var paginaAtual = 1;
+
+    function atualizarPaginacao(){
+        var linhas = $('#listaClienteModal tbody tr:visible');
+        var totalPaginas = Math.ceil(linhas.length / tamPagina) || 1;
+        if(paginaAtual > totalPaginas){ paginaAtual = totalPaginas; }
+        linhas.hide();
+        linhas.slice((paginaAtual-1)*tamPagina, paginaAtual*tamPagina).show();
+        $('#paginaAtual').text(paginaAtual + '/' + totalPaginas);
+        $('#btnPrevCliente').prop('disabled', paginaAtual === 1);
+        $('#btnNextCliente').prop('disabled', paginaAtual === totalPaginas);
+    }
+
+    $('#clienteBusca').on('keyup', function(){
+        var termo = $(this).val().toLowerCase();
+        $('#listaClienteModal tbody tr').each(function(){
+            var cnpj = $(this).data('cnpj').toLowerCase();
+            var nome = $(this).data('nome').toLowerCase();
+            $(this).toggle(cnpj.indexOf(termo) !== -1 || nome.indexOf(termo) !== -1);
+        });
+        paginaAtual = 1;
+        atualizarPaginacao();
+    });
+
+    $('#btnPrevCliente').on('click', function(e){
+        e.preventDefault();
+        if(paginaAtual > 1){
+            paginaAtual--;
+            atualizarPaginacao();
+        }
+    });
+
+    $('#btnNextCliente').on('click', function(e){
+        e.preventDefault();
+        var totalPaginas = Math.ceil($('#listaClienteModal tbody tr:visible').length / tamPagina) || 1;
+        if(paginaAtual < totalPaginas){
+            paginaAtual++;
+            atualizarPaginacao();
+        }
+    });
+
+    $('#listaClienteModal').on('shown.bs.modal', function(){
+        paginaAtual = 1;
+        $('#clienteBusca').val('');
+        $('#listaClienteModal tbody tr').show();
+        atualizarPaginacao();
+    });
 });
