@@ -114,4 +114,24 @@ $(function() {
             e.stopImmediatePropagation();
         }
     });
+
+    if(typeof clientesData !== 'undefined'){
+        var clientesMap = clientesData.map(function(c){
+            return {label: c.nome + ' (' + c.cnpj + ')', value: c.id};
+        });
+        $('#clienteBusca').autocomplete({
+            source: clientesMap,
+            minLength: 0,
+            select: function(event, ui){
+                $('#cliente_id').val(ui.item.value);
+            },
+            change: function(event, ui){
+                if(!ui.item){
+                    $('#cliente_id').val('');
+                }
+            }
+        }).on('focus', function(){
+            $(this).autocomplete('search', $(this).val());
+        });
+    }
 });
