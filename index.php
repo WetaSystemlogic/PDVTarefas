@@ -143,8 +143,75 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body text-center">
-        <button class="btn btn-primary me-2" data-bs-target="#responsavelModal" data-bs-toggle="modal" data-bs-dismiss="modal">Responsável</button>
-        <button class="btn btn-primary" data-bs-target="#clienteModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cliente</button>
+      <button class="btn btn-primary me-2" data-bs-target="#listaResponsavelModal" data-bs-toggle="modal" data-bs-dismiss="modal">Responsável</button>
+        <button class="btn btn-primary" data-bs-target="#listaClienteModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cliente</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lista Responsáveis -->
+<div class="modal fade" id="listaResponsavelModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Responsáveis</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end mb-2">
+          <button class="btn btn-primary" id="btnNovoResponsavel">Novo</button>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr><th>Nome</th><th>Ação</th></tr>
+          </thead>
+          <tbody>
+            <?php foreach ($responsaveis as $r): ?>
+            <tr data-id="<?= $r['id'] ?>" data-nome="<?= htmlspecialchars($r['nome']) ?>">
+              <td><?= htmlspecialchars($r['nome']) ?></td>
+              <td>
+                <button class="btn btn-sm btn-secondary btn-editar-resp">Editar</button>
+                <button class="btn btn-sm btn-danger btn-excluir-resp">Excluir</button>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Lista Clientes -->
+<div class="modal fade" id="listaClienteModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Clientes</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end mb-2">
+          <button class="btn btn-primary" id="btnNovoCliente">Novo</button>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr><th>CNPJ</th><th>Nome</th><th>Ação</th></tr>
+          </thead>
+          <tbody>
+            <?php foreach ($clientes as $c): ?>
+            <tr data-id="<?= $c['id'] ?>" data-cnpj="<?= htmlspecialchars($c['cnpj']) ?>" data-nome="<?= htmlspecialchars($c['nome']) ?>">
+              <td><?= htmlspecialchars($c['cnpj']) ?></td>
+              <td><?= htmlspecialchars($c['nome']) ?></td>
+              <td>
+                <button class="btn btn-sm btn-secondary btn-editar-cliente">Editar</button>
+                <button class="btn btn-sm btn-danger btn-excluir-cliente">Excluir</button>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
       </div>
     </div>
   </div>
@@ -160,6 +227,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
       </div>
       <div class="modal-body">
         <div id="respAlert"></div>
+        <input type="hidden" name="id">
         <div class="mb-3">
           <label class="form-label">Nome</label>
           <input type="text" class="form-control" name="nome" required>
@@ -183,6 +251,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
       </div>
       <div class="modal-body">
         <div id="cliAlert"></div>
+        <input type="hidden" name="id">
         <div class="mb-3">
           <label class="form-label">CNPJ</label>
           <input type="text" class="form-control" name="cnpj" required>
