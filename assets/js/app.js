@@ -234,8 +234,8 @@ $(function() {
     $('#clienteBusca').on('keyup', function(){
         var termo = $(this).val().toLowerCase();
         $('#listaClienteModal tbody tr').each(function(){
-            var cnpj = $(this).data('cnpj').toLowerCase();
-            var nome = $(this).data('nome').toLowerCase();
+            var cnpj = String($(this).data('cnpj')).toLowerCase();
+            var nome = String($(this).data('nome')).toLowerCase();
             $(this).toggle(cnpj.indexOf(termo) !== -1 || nome.indexOf(termo) !== -1);
         });
         paginaAtual = 1;
