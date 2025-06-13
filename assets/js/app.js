@@ -45,6 +45,7 @@ $(function() {
     $('.tarefa-col').sortable({
         connectWith: '.tarefa-col',
         placeholder: 'card-placeholder',
+        forcePlaceholderSize: true,
         start: function() {
             isDragging = true;
         },
