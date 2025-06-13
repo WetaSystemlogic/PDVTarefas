@@ -28,4 +28,26 @@ $(function() {
             }
         }, 'json');
     });
+
+    // Delegação para formulário de atualização de status
+    $(document).on('submit', '#formStatus', function(e) {
+        e.preventDefault();
+        $.post('atualizar_status.php', $(this).serialize(), function(resp) {
+            if (resp.success) {
+                $('#detalhesModal').modal('hide');
+                location.reload();
+            }
+        }, 'json');
+    });
+
+    // Drag and drop das tarefas
+    $('.tarefa-col').sortable({
+        connectWith: '.tarefa-col',
+        placeholder: 'card-placeholder',
+        receive: function(event, ui) {
+            var id = ui.item.data('id');
+            var status = $(this).data('status');
+            $.post('atualizar_status.php', {id: id, status: status});
+        }
+    }).disableSelection();
 });
