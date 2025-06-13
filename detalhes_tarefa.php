@@ -17,6 +17,7 @@ if (!$tarefa) {
 $sub = $pdo->prepare('SELECT * FROM subtarefas WHERE tarefa_id = ?');
 $sub->execute([$id]);
 $subtarefas = $sub->fetchAll(PDO::FETCH_ASSOC);
+$statuses = ['A fazer','Fazendo','Agendado','Aguardando','Finalizado'];
 ?>
 <div class="modal-header">
   <h5 class="modal-title">Detalhes da Tarefa</h5>
@@ -27,6 +28,8 @@ $subtarefas = $sub->fetchAll(PDO::FETCH_ASSOC);
   <p><?= nl2br(htmlspecialchars($tarefa['detalhes'])) ?></p>
   <p><strong>Responsável:</strong> <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></p>
   <p><strong>Cliente:</strong> <?= htmlspecialchars($tarefa['cliente'] ?? 'N/A') ?></p>
+  <p><strong>Criada em:</strong> <?= date('d/m/Y H:i', strtotime($tarefa['created_at'])) ?></p>
+  <p><strong>Atualizada em:</strong> <?= date('d/m/Y H:i', strtotime($tarefa['updated_at'])) ?></p>
   <?php if ($subtarefas): ?>
     <h6>Checklist</h6>
     <ul>
@@ -34,7 +37,19 @@ $subtarefas = $sub->fetchAll(PDO::FETCH_ASSOC);
         <li><?= htmlspecialchars($s['descricao']) ?> <?= $s['concluida'] ? '(Ok)' : '' ?></li>
       <?php endforeach; ?>
     </ul>
-  <?php endif; ?>
+    <?php endif; ?>
+  <form id="formStatus">
+    <input type="hidden" name="id" value="<?= $tarefa['id'] ?>">
+    <div class="mb-3">
+      <label class="form-label">Situação</label>
+      <select class="form-select" name="status">
+        <?php foreach ($statuses as $s): ?>
+          <option value="<?= $s ?>" <?= $s == $tarefa['status'] ? 'selected' : '' ?>><?= $s ?></option>
+        <?php endforeach; ?>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Salvar Situação</button>
+  </form>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>

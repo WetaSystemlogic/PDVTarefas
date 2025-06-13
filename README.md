@@ -1,6 +1,6 @@
 # PDVTarefas
 
-Projeto simples de controle de tarefas em PHP com layout responsivo utilizando Bootstrap.
+Projeto simples de controle de tarefas em PHP com layout responsivo utilizando Bootstrap. Agora as tarefas possuem registro de data/hora de criação e atualização, além de mudança de situação via arraste.
 
 ## Estrutura de Pastas
 ```
