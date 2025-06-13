@@ -194,6 +194,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
       </div>
       <div class="modal-body">
         <div class="d-flex justify-content-end mb-2">
+          <input type="text" class="form-control w-50 me-2" id="clienteBusca" placeholder="Filtrar...">
           <button class="btn btn-primary" id="btnNovoCliente">Novo</button>
         </div>
         <table class="table table-striped">
@@ -213,6 +214,13 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
             <?php endforeach; ?>
           </tbody>
         </table>
+        <nav>
+          <ul class="pagination justify-content-center" id="paginacaoClientes">
+            <li class="page-item"><a href="#" class="page-link" id="btnPrevCliente">Anterior</a></li>
+            <li class="page-item disabled"><span class="page-link" id="paginaAtual">1/1</span></li>
+            <li class="page-item"><a href="#" class="page-link" id="btnNextCliente">Próxima</a></li>
+          </ul>
+        </nav>
       </div>
     </div>
   </div>
