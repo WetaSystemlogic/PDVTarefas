@@ -47,22 +47,27 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
             <div class="tarefa-col" data-status="<?= htmlspecialchars($status) ?>">
             <?php foreach ($tarefas[$status] as $tarefa): ?>
                 <?php
-                    $diff = (new DateTime($tarefa['created_at']))->diff(new DateTime())->days;
-                    if ($diff == 0) {
-                        $tempo = 'Normal';
-                        $badge = 'success';
-                    } elseif ($diff == 1) {
-                        $tempo = 'Atrasada';
-                        $badge = 'warning';
-                    } elseif ($diff == 2) {
-                        $tempo = 'Muito atrasada';
-                        $badge = 'danger';
-                    } elseif ($diff > 5) {
-                        $tempo = 'Urgente muito atrasada';
-                        $badge = 'dark';
-                      } else {
-                        $tempo = 'Muito atrasada';
-                        $badge = 'danger';
+                    if ($tarefa['status'] === 'Finalizado') {
+                        $tempo = 'Finalizado';
+                        $badge = 'primary';
+                    } else {
+                        $diff = (new DateTime($tarefa['created_at']))->diff(new DateTime())->days;
+                        if ($diff == 0) {
+                            $tempo = 'Normal';
+                            $badge = 'success';
+                        } elseif ($diff == 1) {
+                            $tempo = 'Atrasada';
+                            $badge = 'warning';
+                        } elseif ($diff == 2) {
+                            $tempo = 'Muito atrasada';
+                            $badge = 'danger';
+                        } elseif ($diff > 5) {
+                            $tempo = 'Urgente muito atrasada';
+                            $badge = 'dark';
+                        } else {
+                            $tempo = 'Muito atrasada';
+                            $badge = 'danger';
+                        }
                     }
 
                     $detalhesPreview = mb_strlen($tarefa['detalhes']) > 200

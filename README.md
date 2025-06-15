@@ -29,3 +29,6 @@ As cores principais do layout são `#131f45` e branco, garantindo boa visualiza�
 
 ### Favicon
 O arquivo `favicon.ico` já está incluído na raiz do projeto. A página `index.php` referencia esse ícone no elemento `<head>` para exibição pelo navegador. Caso deseje personalizar o ícone, substitua o arquivo `favicon.ico` por outro de sua escolha e recarregue a aplicação.
+
+### Status Finalizado
+Quando a situação de uma tarefa é alterada para **Finalizado**, o indicador de prazo deixa de ser calculado e passa a mostrar o texto **Finalizado**.
