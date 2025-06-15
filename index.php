@@ -3,7 +3,13 @@ require 'config.php';
 
 // Busca tarefas do banco de dados
 function obterTarefasPorStatus($pdo, $status) {
-  $stmt = $pdo->prepare("SELECT t.id, t.titulo, t.detalhes, t.created_at, r.nome AS responsavel FROM tarefas t LEFT JOIN responsaveis r ON t.responsavel_id = r.id WHERE status = ? ORDER BY t.id DESC");
+  $stmt = $pdo->prepare(
+      "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, " .
+      "r.nome AS responsavel " .
+      "FROM tarefas t " .
+      "LEFT JOIN responsaveis r ON t.responsavel_id = r.id " .
+      "WHERE t.status = ? ORDER BY t.id DESC"
+  );
   $stmt->execute([$status]);
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
