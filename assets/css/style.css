@@ -17,3 +17,9 @@ body {
 .tarefa-col {
     min-height: 70px;
 }
+
+/* Permite que o nome do cliente quebre linha dentro do badge */
+.badge-cliente {
+    white-space: normal;
+    word-break: break-word;
+}
