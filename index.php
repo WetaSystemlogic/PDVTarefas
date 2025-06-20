@@ -2,7 +2,14 @@
 require 'config.php';
 
 // Busca tarefas do banco de dados
-function obterTarefasPorStatus($pdo, $status, $dataCadastro = null, $dataModificacao = null) {
+function obterTarefasPorStatus(
+  $pdo,
+  $status,
+  $cadastroDe = null,
+  $cadastroAte = null,
+  $modificacaoDe = null,
+  $modificacaoAte = null
+) {
   $sql =
       "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, " .
       "r.nome AS responsavel, c.nome AS cliente " .
@@ -11,13 +18,21 @@ function obterTarefasPorStatus($pdo, $status, $dataCadastro = null, $dataModific
       "LEFT JOIN clientes c ON t.cliente_id = c.id " .
       "WHERE t.status = ?";
   $params = [$status];
-  if ($dataCadastro) {
-    $sql .= " AND date(t.created_at) = ?";
-    $params[] = $dataCadastro;
+  if ($cadastroDe) {
+    $sql .= " AND date(t.created_at) >= ?";
+    $params[] = $cadastroDe;
   }
-  if ($dataModificacao) {
-    $sql .= " AND date(t.updated_at) = ?";
-    $params[] = $dataModificacao;
+  if ($cadastroAte) {
+    $sql .= " AND date(t.created_at) <= ?";
+    $params[] = $cadastroAte;
+  }
+  if ($modificacaoDe) {
+    $sql .= " AND date(t.updated_at) >= ?";
+    $params[] = $modificacaoDe;
+  }
+  if ($modificacaoAte) {
+    $sql .= " AND date(t.updated_at) <= ?";
+    $params[] = $modificacaoAte;
   }
   $sql .= " ORDER BY t.id DESC";
   $stmt = $pdo->prepare($sql);
@@ -28,10 +43,19 @@ function obterTarefasPorStatus($pdo, $status, $dataCadastro = null, $dataModific
 $statuses = ['A fazer', 'Fazendo', 'Agendado', 'Aguardando', 'Finalizado'];
 $tarefas = [];
 // Filtros de data
-$dataCadastro = $_GET['data_cadastro'] ?? null;
-$dataModificacao = $_GET['data_modificacao'] ?? null;
+$dataCadastroDe = $_GET['data_cadastro_de'] ?? null;
+$dataCadastroAte = $_GET['data_cadastro_ate'] ?? null;
+$dataModificacaoDe = $_GET['data_modificacao_de'] ?? null;
+$dataModificacaoAte = $_GET['data_modificacao_ate'] ?? null;
 foreach ($statuses as $s) {
-  $tarefas[$s] = obterTarefasPorStatus($pdo, $s, $dataCadastro, $dataModificacao);
+  $tarefas[$s] = obterTarefasPorStatus(
+      $pdo,
+      $s,
+      $dataCadastroDe,
+      $dataCadastroAte,
+      $dataModificacaoDe,
+      $dataModificacaoAte
+  );
 }
 
 $responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
@@ -63,13 +87,21 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
     <div class="row mb-3">
         <div class="col">
             <form class="row gy-2 gx-2 align-items-end" method="GET" action="index.php">
-                <div class="col-auto">
-                    <label class="form-label" for="dataCadastro">Data de Cadastro</label>
-                    <input type="date" id="dataCadastro" name="data_cadastro" class="form-control" value="<?= htmlspecialchars($dataCadastro ?? '') ?>">
+            <div class="col-auto">
+                    <label class="form-label" for="dataCadastroDe">Cadastro de</label>
+                    <input type="date" id="dataCadastroDe" name="data_cadastro_de" class="form-control" value="<?= htmlspecialchars($dataCadastroDe ?? '') ?>">
                 </div>
                 <div class="col-auto">
-                    <label class="form-label" for="dataModificacao">Data de Modificação</label>
-                    <input type="date" id="dataModificacao" name="data_modificacao" class="form-control" value="<?= htmlspecialchars($dataModificacao ?? '') ?>">
+                    <label class="form-label" for="dataCadastroAte">Cadastro até</label>
+                    <input type="date" id="dataCadastroAte" name="data_cadastro_ate" class="form-control" value="<?= htmlspecialchars($dataCadastroAte ?? '') ?>">
+                </div>
+                <div class="col-auto">
+                    <label class="form-label" for="dataModificacaoDe">Modificação de</label>
+                    <input type="date" id="dataModificacaoDe" name="data_modificacao_de" class="form-control" value="<?= htmlspecialchars($dataModificacaoDe ?? '') ?>">
+                </div>
+                <div class="col-auto">
+                    <label class="form-label" for="dataModificacaoAte">Modificação até</label>
+                    <input type="date" id="dataModificacaoAte" name="data_modificacao_ate" class="form-control" value="<?= htmlspecialchars($dataModificacaoAte ?? '') ?>">
                 </div>
                 <div class="col-auto">
                     <button type="submit" class="btn btn-primary">Filtrar</button>
