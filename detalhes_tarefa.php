@@ -19,7 +19,7 @@ $sub->execute([$id]);
 $subtarefas = $sub->fetchAll(PDO::FETCH_ASSOC);
 $statuses = ['A fazer','Fazendo','Agendado','Aguardando','Finalizado'];
 $responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
-$clientes = $pdo->query('SELECT id, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
+$clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
 $com = $pdo->prepare('SELECT texto, created_at FROM comentarios WHERE tarefa_id = ? ORDER BY id DESC');
 $com->execute([$id]);
 $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
@@ -50,12 +50,28 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
     </div>
     <div class="mb-3">
       <label class="form-label">Cliente</label>
-      <select class="form-select" name="cliente_id">
-        <option value="">Selecione...</option>
-        <?php foreach ($clientes as $c): ?>
-          <option value="<?= $c['id'] ?>" <?= $tarefa['cliente_id'] == $c['id'] ? 'selected' : '' ?>><?= htmlspecialchars($c['nome']) ?></option>
-        <?php endforeach; ?>
-      </select>
+      <input type="hidden" name="cliente_id" id="det_cliente_id" value="<?= $tarefa['cliente_id'] ?>">
+      <div class="dropdown" id="detClienteDropdown">
+        <?php
+            $clienteNome = 'Selecione...';
+            foreach ($clientes as $c) {
+                if ($c['id'] == $tarefa['cliente_id']) {
+                    $clienteNome = htmlspecialchars($c['nome']);
+                    break;
+                }
+            }
+        ?>
+        <button class="form-select text-start" type="button" id="detClienteDropdownBtn" data-bs-toggle="dropdown" aria-expanded="false">
+          <?= $clienteNome ?>
+        </button>
+        <ul class="dropdown-menu w-100" id="detClienteDropdownMenu" aria-labelledby="detClienteDropdownBtn">
+          <li class="px-3"><input type="text" class="form-control" id="detClienteFiltro" placeholder="Buscar..."></li>
+          <li><hr class="dropdown-divider"></li>
+          <?php foreach ($clientes as $c): ?>
+          <li><a class="dropdown-item" href="#" data-id="<?= $c['id'] ?>"><?= htmlspecialchars($c['nome']) ?> (<?= htmlspecialchars($c['cnpj']) ?>)</a></li>
+          <?php endforeach; ?>
+        </ul>
+      </div>
     </div>
     <button type="submit" class="btn btn-primary mb-3">Salvar Alterações</button>
   </form>
@@ -99,3 +115,22 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
   <button type="button" class="btn btn-danger me-auto" id="btnExcluirTarefa">Excluir</button>
   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
 </div>
+<script>
+$(function(){
+    $('#detClienteFiltro').on('keyup', function(){
+        var termo = $(this).val().toLowerCase();
+        $('#detClienteDropdownMenu a.dropdown-item').each(function(){
+            var txt = $(this).text().toLowerCase();
+            $(this).toggle(txt.indexOf(termo) !== -1);
+        });
+    });
+
+    $('#detClienteDropdownMenu').on('click', 'a.dropdown-item', function(e){
+        e.preventDefault();
+        var nome = $(this).text();
+        var id = $(this).data('id');
+        $('#detClienteDropdownBtn').text(nome);
+        $('#det_cliente_id').val(id);
+    });
+});
+</script>
