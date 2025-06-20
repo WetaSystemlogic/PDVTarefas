@@ -2,22 +2,36 @@
 require 'config.php';
 
 // Busca tarefas do banco de dados
-function obterTarefasPorStatus($pdo, $status) {
-  $stmt = $pdo->prepare(
+function obterTarefasPorStatus($pdo, $status, $dataCadastro = null, $dataModificacao = null) {
+  $sql =
       "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, " .
-      "r.nome AS responsavel " .
+      "r.nome AS responsavel, c.nome AS cliente " .
       "FROM tarefas t " .
       "LEFT JOIN responsaveis r ON t.responsavel_id = r.id " .
-      "WHERE t.status = ? ORDER BY t.id DESC"
-  );
-  $stmt->execute([$status]);
+      "LEFT JOIN clientes c ON t.cliente_id = c.id " .
+      "WHERE t.status = ?";
+  $params = [$status];
+  if ($dataCadastro) {
+    $sql .= " AND date(t.created_at) = ?";
+    $params[] = $dataCadastro;
+  }
+  if ($dataModificacao) {
+    $sql .= " AND date(t.updated_at) = ?";
+    $params[] = $dataModificacao;
+  }
+  $sql .= " ORDER BY t.id DESC";
+  $stmt = $pdo->prepare($sql);
+  $stmt->execute($params);
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
 $statuses = ['A fazer', 'Fazendo', 'Agendado', 'Aguardando', 'Finalizado'];
 $tarefas = [];
+// Filtros de data
+$dataCadastro = $_GET['data_cadastro'] ?? null;
+$dataModificacao = $_GET['data_modificacao'] ?? null;
 foreach ($statuses as $s) {
-  $tarefas[$s] = obterTarefasPorStatus($pdo, $s);
+  $tarefas[$s] = obterTarefasPorStatus($pdo, $s, $dataCadastro, $dataModificacao);
 }
 
 $responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
@@ -44,8 +58,28 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
             <button class="btn btn-light">Configurações</button>
         </div>
     </div>
-</nav>
+    </nav>
 <div class="container-fluid mt-4">
+    <div class="row mb-3">
+        <div class="col">
+            <form class="row gy-2 gx-2 align-items-end" method="GET" action="index.php">
+                <div class="col-auto">
+                    <label class="form-label" for="dataCadastro">Data de Cadastro</label>
+                    <input type="date" id="dataCadastro" name="data_cadastro" class="form-control" value="<?= htmlspecialchars($dataCadastro ?? '') ?>">
+                </div>
+                <div class="col-auto">
+                    <label class="form-label" for="dataModificacao">Data de Modificação</label>
+                    <input type="date" id="dataModificacao" name="data_modificacao" class="form-control" value="<?= htmlspecialchars($dataModificacao ?? '') ?>">
+                </div>
+                <div class="col-auto">
+                    <button type="submit" class="btn btn-primary">Filtrar</button>
+                </div>
+                <div class="col-auto">
+                    <a href="index.php" class="btn btn-secondary">Mostrar Todos</a>
+                </div>
+            </form>
+        </div>
+    </div>
     <div class="row" id="kanban-board">
     <?php foreach ($statuses as $status): ?>
         <div class="col-md-2 col-12 mb-3">
@@ -84,6 +118,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
                     <div class="card-body p-2">
                         <h6 class="card-title mb-1"><?= htmlspecialchars($tarefa['titulo']) ?></h6>
                         <p class="mb-1 small"><?= htmlspecialchars($detalhesPreview) ?></p>
+                        <p class="mb-0"><span class="badge bg-info text-dark">Cliente: <?= htmlspecialchars($tarefa['cliente'] ?? 'N/A') ?></span></p>
                         <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></span></p>
                         <p class="mb-0 mt-1"><span class="badge bg-<?= $badge ?>"><?= $tempo ?></span></p>
                     </div>
