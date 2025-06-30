@@ -11,7 +11,7 @@ function obterTarefasPorStatus(
   $modificacaoAte = null
 ) {
   $sql =
-      "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, " .
+      "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, t.tipo_atendimento, " .
       "r.nome AS responsavel, c.nome AS cliente " .
       "FROM tarefas t " .
       "LEFT JOIN responsaveis r ON t.responsavel_id = r.id " .
@@ -203,6 +203,13 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
               <?php endforeach; ?>
             </ul>
           </div>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Tipo de atendimento</label>
+          <select class="form-select" name="tipo_atendimento">
+            <option value="Remoto">Remoto</option>
+            <option value="Presencial">Presencial</option>
+          </select>
         </div>
         <div class="mb-3">
           <label class="form-label">Data e Hora de Criação</label>

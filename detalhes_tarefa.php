@@ -73,6 +73,13 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
         </ul>
       </div>
     </div>
+    <div class="mb-3">
+      <label class="form-label">Tipo de atendimento</label>
+      <select class="form-select" name="tipo_atendimento">
+        <option value="Remoto" <?= $tarefa['tipo_atendimento'] == 'Remoto' ? 'selected' : '' ?>>Remoto</option>
+        <option value="Presencial" <?= $tarefa['tipo_atendimento'] == 'Presencial' ? 'selected' : '' ?>>Presencial</option>
+      </select>
+    </div>
     <button type="submit" class="btn btn-primary mb-3">Salvar Alterações</button>
   </form>
 
