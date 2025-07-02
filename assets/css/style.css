@@ -23,3 +23,13 @@ body {
     white-space: normal;
     word-break: break-word;
 }
+
+/* Botoes de acao nos cards */
+.tarefa-card {
+    position: relative;
+}
+.tarefa-card .card-actions {
+    position: absolute;
+    bottom: 0.25rem;
+    right: 0.25rem;
+}

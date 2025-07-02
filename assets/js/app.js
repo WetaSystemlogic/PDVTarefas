@@ -119,6 +119,29 @@ $(function() {
         }
     });
 
+    // Botoes de acao nos cards
+    $(document).on('click', '.btn-duplicar', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var id = $(this).closest('.tarefa-card').data('id');
+        $.post('duplicar_tarefa.php', {id: id}, function(resp){
+            if(resp.success){
+                location.reload();
+            }
+        }, 'json');
+    });
+
+    $(document).on('click', '.btn-finalizar', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var id = $(this).closest('.tarefa-card').data('id');
+        $.post('atualizar_status.php', {id: id, status: 'Finalizado'}, function(resp){
+            if(resp.success){
+                location.reload();
+            }
+        }, 'json');
+    });
+
     // Responsáveis
     $(document).on('click', '#btnNovoResponsavel', function(){
         $('#formResponsavel')[0].reset();
