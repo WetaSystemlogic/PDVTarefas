@@ -70,6 +70,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/css/style.css">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
@@ -147,12 +148,16 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
                         : $tarefa['detalhes'];
                 ?>
                 <div class="card mb-2 tarefa-card" data-id="<?= $tarefa['id'] ?>" data-bs-toggle="modal" data-bs-target="#detalhesModal" onclick="carregarDetalhes(<?= $tarefa['id'] ?>)">
-                    <div class="card-body p-2">
+                    <div class="card-body p-2 pb-4">
                         <h6 class="card-title mb-1"><?= htmlspecialchars($tarefa['titulo']) ?></h6>
                         <p class="mb-1 small"><?= htmlspecialchars($detalhesPreview) ?></p>
                         <p class="mb-0"><span class="badge bg-info text-dark badge-cliente">Cliente: <?= htmlspecialchars($tarefa['cliente'] ?? 'N/A') ?></span></p>
                         <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></span></p>
                         <p class="mb-0 mt-1"><span class="badge bg-<?= $badge ?>"><?= $tempo ?></span></p>
+                        <div class="card-actions d-flex gap-1">
+                            <button class="btn btn-light btn-sm btn-duplicar" title="Duplicar"><i class="bi bi-files"></i></button>
+                            <button class="btn btn-light btn-sm btn-finalizar" title="Finalizar"><i class="bi bi-check-circle"></i></button>
+                        </div>
                     </div>
                 </div>
             <?php endforeach; ?>
