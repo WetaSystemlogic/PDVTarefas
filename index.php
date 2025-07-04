@@ -70,7 +70,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>PDVTarefas</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
-    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="stylesheet" href="assets/css/style.css?v=1.0.0">
     <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
@@ -434,6 +434,6 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
 <script>
 var clientesData = <?php echo json_encode($clientes); ?>;
 </script>
-<script src="assets/js/app.js"></script>
+<script src="assets/js/app.js?v=1.0.0"></script>
 </body>
 </html>
