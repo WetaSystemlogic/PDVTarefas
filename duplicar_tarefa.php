@@ -28,7 +28,7 @@ $stmt->execute([
     $tarefa['tipo_atendimento'],
     'A fazer',
     $now,
-    $now␊
+    $now
 ]);
 
 echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
