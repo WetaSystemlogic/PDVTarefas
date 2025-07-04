@@ -168,6 +168,7 @@ $(function() {
     $(document).on('click', '.btn-arquivar', function(e){
         e.preventDefault();
         e.stopPropagation();
+        e.stopImmediatePropagation();
         var id = $(this).closest('.tarefa-card').data('id');
         $.post('atualizar_status.php', {id: id, status: 'Arquivada'}, function(resp){
             if(resp.success){
