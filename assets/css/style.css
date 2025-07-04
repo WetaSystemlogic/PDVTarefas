@@ -38,3 +38,16 @@ body {
     max-width: 100px;
     cursor: pointer;
 }
+
+/* Ajustes visuais dos cards */
+.badge-atendimento {
+    background-color: #363636;
+    color: #fff;
+}
+.tarefa-card .card-title {
+    padding-right: 1.75rem; /* espaco para o icone de notificacao */
+    word-break: break-word;
+}
+.icon-notificacao {
+    /* utiliza posicionamento absoluto fornecido pelo bootstrap */
+}
