@@ -24,7 +24,7 @@ function atualizarKanban(callback){
 }
 
 $(function() {
-    setInterval(atualizarKanban, 5000);
+    setInterval(atualizarKanban, 5000); /*5000=Para Atualizar em 5 segunos */
 
     $('#novaTarefaForm').on('submit', function(e){
         e.preventDefault();
@@ -152,12 +152,19 @@ $(function() {
         }
     }).disableSelection();
 
-    // Impede abertura do modal quando o card está sendo arrastado
+    // Abre detalhes ao clicar no card, exceto durante arraste ou em botoes
     $(document).on('click', '.tarefa-card', function(e){
         if(isDragging){
             e.preventDefault();
             e.stopImmediatePropagation();
+            return;
         }
+        if($(e.target).closest('.card-actions').length){
+            return;
+        }
+        var id = $(this).data('id');
+        carregarDetalhes(id);
+        $('#detalhesModal').modal('show');
     });
 
     // Botoes de acao nos cards
