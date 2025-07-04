@@ -8,7 +8,7 @@ if (!$id) {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT titulo, detalhes, responsavel_id, cliente_id, tipo_atendimento, status FROM tarefas WHERE id = ?');
+$stmt = $pdo->prepare('SELECT titulo, detalhes, responsavel_id, cliente_id, tipo_atendimento FROM tarefas WHERE id = ?');
 $stmt->execute([$id]);
 $tarefa = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -26,10 +26,10 @@ $stmt->execute([
     $tarefa['responsavel_id'],
     $tarefa['cliente_id'],
     $tarefa['tipo_atendimento'],
-    $tarefa['status'],
+    'A fazer',
     $now,
-    $now
+    $now␊
 ]);
 
-echo json_encode(['success' => true]);
+echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
 ?>

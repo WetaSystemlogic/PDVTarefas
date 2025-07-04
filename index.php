@@ -12,7 +12,8 @@ function obterTarefasPorStatus(
 ) {
   $sql =
       "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, t.tipo_atendimento, " .
-      "r.nome AS responsavel, c.nome AS cliente " .
+      "r.nome AS responsavel, c.nome AS cliente, " .
+      "(SELECT COUNT(*) FROM comentarios com WHERE com.tarefa_id = t.id AND com.lido = 0) AS nao_lidos " .
       "FROM tarefas t " .
       "LEFT JOIN responsaveis r ON t.responsavel_id = r.id " .
       "LEFT JOIN clientes c ON t.cliente_id = c.id " .
@@ -148,13 +149,22 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
                         ? mb_substr($tarefa['detalhes'], 0, 200) . '...'
                         : $tarefa['detalhes'];
                 ?>
-                <div class="card mb-2 tarefa-card" data-id="<?= $tarefa['id'] ?>" data-bs-toggle="modal" data-bs-target="#detalhesModal" onclick="carregarDetalhes(<?= $tarefa['id'] ?>)">
+                <div class="card mb-2 tarefa-card position-relative" data-id="<?= $tarefa['id'] ?>" data-bs-toggle="modal" data-bs-target="#detalhesModal" onclick="carregarDetalhes(<?= $tarefa['id'] ?>)">
                     <div class="card-body p-2 pb-4">
+                        <div class="position-absolute top-0 end-0 m-1 text-danger">
+                            <i class="bi bi-bell"></i>
+                            <?php if ($tarefa['nao_lidos'] > 0): ?>
+                                <span class="badge bg-danger">
+                                    <?= $tarefa['nao_lidos'] ?>
+                                </span>
+                            <?php endif; ?>
+                        </div>
                         <h6 class="card-title mb-1"><?= htmlspecialchars($tarefa['titulo']) ?></h6>
                         <p class="mb-1 small"><?= htmlspecialchars($detalhesPreview) ?></p>
                         <p class="mb-0"><span class="badge bg-info text-dark badge-cliente">Cliente: <?= htmlspecialchars($tarefa['cliente'] ?? 'N/A') ?></span></p>
                         <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></span></p>
                         <p class="mb-0 mt-1"><span class="badge bg-<?= $badge ?>"><?= $tempo ?></span></p>
+                        <p class="mb-0"><span class="badge bg-light text-dark"><?= htmlspecialchars($tarefa['tipo_atendimento']) ?></span></p>
                         <div class="card-actions d-flex gap-1">
                             <?php if ($tarefa['status'] === 'Finalizado'): ?>
                                 <button class="btn btn-light btn-sm btn-arquivar" title="Arquivar"><i class="bi bi-archive"></i></button>
