@@ -142,6 +142,17 @@ $(function() {
         }, 'json');
     });
 
+    $(document).on('click', '.btn-arquivar', function(e){
+        e.preventDefault();
+        e.stopPropagation();
+        var id = $(this).closest('.tarefa-card').data('id');
+        $.post('atualizar_status.php', {id: id, status: 'Arquivada'}, function(resp){
+            if(resp.success){
+                location.reload();
+            }
+        }, 'json');
+    });
+
     // Responsáveis
     $(document).on('click', '#btnNovoResponsavel', function(){
         $('#formResponsavel')[0].reset();
