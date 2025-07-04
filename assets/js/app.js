@@ -7,7 +7,30 @@ function carregarDetalhes(id) {
     });
 }
 
+function atualizarKanban(callback){
+    var dados = '';
+    if($('#filtrosForm').length){
+        dados = $('#filtrosForm').serialize();
+    }
+    $.get('obter_tarefas.php', dados, function(resp){
+        for(var status in resp){
+            $('.tarefa-col[data-status="'+status+'"]').html(resp[status]);
+        }
+        if(typeof callback === 'function') callback();
+    }, 'json');
+}
+
 $(function() {
+    setInterval(atualizarKanban, 5000);
+
+    $('#novaTarefaForm').on('submit', function(e){
+        e.preventDefault();
+        $.post('salvar_tarefa.php', $(this).serialize(), function(){
+            $('#novaTarefaModal').modal('hide');
+            atualizarKanban();
+        }, 'json');
+    });
+
     $('#formResponsavel').on('submit', function(e) {
         e.preventDefault();
         var id = $(this).find('input[name=id]').val();
@@ -15,7 +38,7 @@ $(function() {
         $.post(url, $(this).serialize(), function(resp) {
             if (resp.success) {
                 $('#responsavelModal').modal('hide');
-                location.reload();
+                atualizarKanban();
             } else {
                 $('#respAlert').html('<div class="alert alert-warning alert-dismissible fade show" role="alert">'+resp.message+'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
             }
@@ -29,7 +52,7 @@ $(function() {
         $.post(url, $(this).serialize(), function(resp) {
             if (resp.success) {
                 $('#clienteModal').modal('hide');
-                location.reload();
+                atualizarKanban();
             } else {
                 $('#cliAlert').html('<div class="alert alert-warning alert-dismissible fade show" role="alert">'+resp.message+'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
             }
@@ -42,7 +65,7 @@ $(function() {
         $.post('atualizar_status.php', $(this).serialize(), function(resp) {
             if (resp.success) {
                 $('#detalhesModal').modal('hide');
-                location.reload();
+                atualizarKanban();
             }
         }, 'json');
     });
@@ -53,7 +76,7 @@ $(function() {
         $.post('atualizar_tarefa.php', $(this).serialize(), function(resp){
             if(resp.success){
                 $('#detalhesModal').modal('hide');
-                location.reload();
+                atualizarKanban();
             }
         }, 'json');
     });
@@ -84,7 +107,7 @@ $(function() {
                 $.post('excluir_tarefa.php', {id:id}, function(resp){
                     if(resp.success){
                         $('#detalhesModal').modal('hide');
-                        location.reload();
+                        atualizarKanban();
                     }
                 }, 'json');
             }
@@ -126,7 +149,7 @@ $(function() {
         var id = $(this).closest('.tarefa-card').data('id');
         $.post('duplicar_tarefa.php', {id: id}, function(resp){
             if(resp.success){
-                location.reload();
+                atualizarKanban();
             }
         }, 'json');
     });
@@ -137,7 +160,7 @@ $(function() {
         var id = $(this).closest('.tarefa-card').data('id');
         $.post('atualizar_status.php', {id: id, status: 'Finalizado'}, function(resp){
             if(resp.success){
-                location.reload();
+                atualizarKanban();
             }
         }, 'json');
     });
@@ -148,7 +171,7 @@ $(function() {
         var id = $(this).closest('.tarefa-card').data('id');
         $.post('atualizar_status.php', {id: id, status: 'Arquivada'}, function(resp){
             if(resp.success){
-                location.reload();
+                atualizarKanban();
             }
         }, 'json');
     });
@@ -185,7 +208,7 @@ $(function() {
             if(res.isConfirmed){
                 $.post('excluir_responsavel.php', {id:id}, function(resp){
                     if(resp.success){
-                        location.reload();
+                        atualizarKanban();
                     }
                 }, 'json');
             }
@@ -225,7 +248,7 @@ $(function() {
             if(res.isConfirmed){
                 $.post('excluir_cliente.php', {id:id}, function(resp){
                     if(resp.success){
-                        location.reload();
+                        atualizarKanban();
                     }
                 }, 'json');
             }

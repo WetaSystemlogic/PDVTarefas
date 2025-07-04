@@ -18,6 +18,12 @@ if ($titulo) {
     $stmt->execute([$titulo, $detalhes, $responsavel_id, $cliente_id, $tipo_atendimento, 'A fazer', $created_at, $updated_at]);
 }
 
+$isAjax = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
+if ($isAjax) {
+    echo json_encode(['success' => true]);
+    exit;
+}
+
 header('Location: index.php');
 exit;
 ?>

@@ -88,7 +88,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
 <div class="container-fluid mt-4">
     <div class="row mb-3">
         <div class="col">
-            <form class="row gy-2 gx-2 align-items-end" method="GET" action="index.php">
+            <form id="filtrosForm" class="row gy-2 gx-2 align-items-end" method="GET" action="index.php">
             <div class="col-auto">
                     <label class="form-label" for="dataCadastroDe">Cadastro de</label>
                     <input type="date" id="dataCadastroDe" name="data_cadastro_de" class="form-control" value="<?= htmlspecialchars($dataCadastroDe ?? '') ?>">
@@ -176,7 +176,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
 <!-- Modal Nova Tarefa -->
 <div class="modal fade" id="novaTarefaModal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog">
-    <form class="modal-content" method="POST" action="salvar_tarefa.php">
+    <form id="novaTarefaForm" class="modal-content" method="POST" action="salvar_tarefa.php">
       <div class="modal-header">
         <h5 class="modal-title">Nova Tarefa</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
