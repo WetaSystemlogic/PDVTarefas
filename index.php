@@ -57,6 +57,7 @@ foreach ($statuses as $s) {
       $dataModificacaoAte
   );
 }
+$arquivadas = obterTarefasPorStatus($pdo, 'Arquivada');
 
 $responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
 $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
@@ -80,7 +81,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
         <div class="d-flex">
             <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#novaTarefaModal">Nova Tarefa</button>
             <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#cadastroModal">Cadastro</button>
-            <button class="btn btn-light">Configurações</button>
+            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#arquivadasModal">Arquivadas</button>
         </div>
     </div>
     </nav>
@@ -155,8 +156,13 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
                         <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></span></p>
                         <p class="mb-0 mt-1"><span class="badge bg-<?= $badge ?>"><?= $tempo ?></span></p>
                         <div class="card-actions d-flex gap-1">
+                            <?php if ($tarefa['status'] === 'Finalizado'): ?>
+                                <button class="btn btn-light btn-sm btn-arquivar" title="Arquivar"><i class="bi bi-archive"></i></button>
+                            <?php endif; ?>
                             <button class="btn btn-light btn-sm btn-duplicar" title="Duplicar"><i class="bi bi-files"></i></button>
-                            <button class="btn btn-light btn-sm btn-finalizar" title="Finalizar"><i class="bi bi-check-circle"></i></button>
+                            <?php if ($tarefa['status'] !== 'Finalizado'): ?>
+                                <button class="btn btn-light btn-sm btn-finalizar" title="Finalizar"><i class="bi bi-check-circle"></i></button>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -315,6 +321,32 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
             <li class="page-item"><a href="#" class="page-link" id="btnNextCliente">Próxima</a></li>
           </ul>
         </nav>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Arquivadas -->
+<div class="modal fade" id="arquivadasModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Tarefas Arquivadas</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <?php if ($arquivadas): ?>
+          <ul class="list-group">
+            <?php foreach ($arquivadas as $a): ?>
+              <li class="list-group-item d-flex justify-content-between">
+                <?= htmlspecialchars($a['titulo']) ?>
+                <small class="text-muted"><?= date('d/m/Y', strtotime($a['created_at'])) ?></small>
+              </li>
+            <?php endforeach; ?>
+          </ul>
+        <?php else: ?>
+          <p>Nenhuma tarefa arquivada.</p>
+        <?php endif; ?>
       </div>
     </div>
   </div>

@@ -32,3 +32,6 @@ O arquivo `favicon.ico` já está incluído na raiz do projeto. A página `index
 
 ### Status Finalizado
 Quando a situação de uma tarefa é alterada para **Finalizado**, o indicador de prazo deixa de ser calculado e passa a mostrar o texto **Finalizado**.
+
+### Arquivar tarefas
+Tarefas finalizadas podem ser arquivadas clicando no ícone de arquivo no card. Arquivadas não aparecem no kanban e ficam listadas no botão **Arquivadas** no topo da página.
