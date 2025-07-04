@@ -77,7 +77,7 @@ foreach ($statuses as $status) {
             ? mb_substr($tarefa['detalhes'], 0, 200) . '...'
             : $tarefa['detalhes'];
         ?>
-        <div class="card mb-2 tarefa-card position-relative" data-id="<?= $tarefa['id'] ?>" data-bs-toggle="modal" data-bs-target="#detalhesModal" onclick="carregarDetalhes(<?= $tarefa['id'] ?>)">
+        <div class="card mb-2 tarefa-card position-relative" data-id="<?= $tarefa['id'] ?>">
             <div class="card-body p-2 pb-4">
                 <div class="position-absolute top-0 end-0 m-1 text-danger icon-notificacao">
                     <i class="bi bi-bell"></i>
