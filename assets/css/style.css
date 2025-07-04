@@ -33,3 +33,8 @@ body {
     bottom: 0.25rem;
     right: 0.25rem;
 }
+
+.comentario-thumb {
+    max-width: 100px;
+    cursor: pointer;
+}

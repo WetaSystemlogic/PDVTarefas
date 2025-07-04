@@ -20,7 +20,7 @@ $subtarefas = $sub->fetchAll(PDO::FETCH_ASSOC);
 $statuses = ['A fazer','Fazendo','Agendado','Aguardando','Finalizado'];
 $responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
 $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
-$com = $pdo->prepare('SELECT texto, created_at FROM comentarios WHERE tarefa_id = ? ORDER BY id DESC');
+$com = $pdo->prepare('SELECT id, texto, imagem, created_at FROM comentarios WHERE tarefa_id = ? ORDER BY id DESC');
 $com->execute([$id]);
 $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -112,11 +112,20 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
       <div class="border p-2 mb-2">
         <div class="small text-muted"><?= date('d/m/Y H:i', strtotime($c['created_at'])) ?></div>
         <div><?= $c['texto'] ?></div>
+        <?php if (!empty($c['imagem'])): ?>
+          <img src="<?= htmlspecialchars($c['imagem']) ?>" class="img-thumbnail comentario-thumb mt-1" style="max-width:100px;cursor:pointer;" data-img="<?= htmlspecialchars($c['imagem']) ?>">
+        <?php endif; ?>
       </div>
     <?php endforeach; ?>
   </div>
   <div id="comentarioEditor" style="height:100px;" class="mb-2"></div>
+  <input type="file" id="comentarioImagem" accept="image/*" class="form-control mb-2">
   <button type="button" class="btn btn-success" id="btnSalvarComentario">Salvar Comentário</button>
+</div>
+<div class="modal fade" id="imagemModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <img src="" class="img-fluid" id="imagemModalImg">
+  </div>
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-danger me-auto" id="btnExcluirTarefa">Excluir</button>
@@ -138,6 +147,12 @@ $(function(){
         var id = $(this).data('id');
         $('#detClienteDropdownBtn').text(nome);
         $('#det_cliente_id').val(id);
+    });
+
+    $('#listaComentarios').on('click', '.comentario-thumb', function(){
+        var src = $(this).data('img');
+        $('#imagemModalImg').attr('src', src);
+        $('#imagemModal').modal('show');
     });
 });
 </script>

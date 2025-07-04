@@ -4,6 +4,9 @@ function carregarDetalhes(id) {
         if (typeof Quill !== 'undefined') {
             window.quill = new Quill('#comentarioEditor', {theme: 'snow'});
         }
+        $.post('marcar_comentarios_lidos.php', {id:id}, function(){
+            atualizarKanban();
+        });
     });
 }
 
@@ -85,11 +88,26 @@ $(function() {
     $(document).on('click', '#btnSalvarComentario', function(){
         var id = $('#formTarefaDetalhes input[name=id]').val();
         var texto = window.quill.root.innerHTML;
-        $.post('salvar_comentario.php', {tarefa_id: id, texto: texto}, function(resp){
-            if(resp.success){
-                carregarDetalhes(id);
+        var formData = new FormData();
+        formData.append('tarefa_id', id);
+        formData.append('texto', texto);
+        var file = $('#comentarioImagem')[0].files[0];
+        if(file){
+            formData.append('imagem', file);
+        }
+        $.ajax({
+            url: 'salvar_comentario.php',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            dataType: 'json',
+            success: function(resp){
+                if(resp.success){
+                    carregarDetalhes(id);
+                }
             }
-        }, 'json');
+        });
     });
 
     // Excluir tarefa
@@ -149,7 +167,10 @@ $(function() {
         var id = $(this).closest('.tarefa-card').data('id');
         $.post('duplicar_tarefa.php', {id: id}, function(resp){
             if(resp.success){
-                atualizarKanban();
+                atualizarKanban(function(){
+                    carregarDetalhes(resp.id);
+                    $('#detalhesModal').modal('show');
+                });
             }
         }, 'json');
     });

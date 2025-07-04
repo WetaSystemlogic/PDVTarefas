@@ -33,6 +33,8 @@ $queries = [
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tarefa_id INTEGER NOT NULL,
         texto TEXT NOT NULL,
+        imagem TEXT,
+        lido INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );"
 ];
@@ -45,6 +47,15 @@ foreach ($queries as $query) {
 $cols = $pdo->query("PRAGMA table_info(tarefas)")->fetchAll(PDO::FETCH_COLUMN, 1);
 if (!in_array('tipo_atendimento', $cols)) {
     $pdo->exec("ALTER TABLE tarefas ADD COLUMN tipo_atendimento TEXT DEFAULT 'Remoto'");
+}
+
+// Adiciona colunas em comentarios se não existirem
+$colsComentarios = $pdo->query("PRAGMA table_info(comentarios)")->fetchAll(PDO::FETCH_COLUMN, 1);
+if (!in_array('imagem', $colsComentarios)) {
+    $pdo->exec("ALTER TABLE comentarios ADD COLUMN imagem TEXT");
+}
+if (!in_array('lido', $colsComentarios)) {
+    $pdo->exec("ALTER TABLE comentarios ADD COLUMN lido INTEGER DEFAULT 0");
 }
 
 echo "Banco de dados inicializado com sucesso.\n";
