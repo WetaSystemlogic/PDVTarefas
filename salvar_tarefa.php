@@ -26,4 +26,3 @@ if ($isAjax) {
 
 header('Location: index.php');
 exit;
-?>
