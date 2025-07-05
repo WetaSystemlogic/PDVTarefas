@@ -27,11 +27,17 @@ function atualizarKanban(callback){
         dados = $('#filtrosForm').serialize();
     }
     $.get('obter_tarefas.php', dados, function(resp){
+        if(resp.error === 'not_authenticated'){
+            window.location = 'login.php';
+            return;
+        }
         for(var status in resp){
             $('.tarefa-col[data-status="'+status+'"]').html(resp[status]);
         }
         if(typeof callback === 'function') callback();
-    }, 'json');
+    }, 'json').fail(function(){
+        window.location = 'login.php';
+    });
 }
 
 $(function() {
