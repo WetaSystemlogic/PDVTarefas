@@ -35,7 +35,11 @@ function obterTarefasPorStatus($pdo, $status, $cadastroDe = null, $cadastroAte =
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-$statuses = ['A fazer', 'Fazendo', 'Agendado', 'Aguardando', 'Finalizado'];
+$defaultStatuses = ['A fazer', 'Fazendo', 'Agendado', 'Aguardando', 'Finalizado'];
+$stmt = $pdo->query("SELECT DISTINCT status FROM tarefas");
+$dbStatuses = $stmt->fetchAll(PDO::FETCH_COLUMN);
+$statuses = array_unique(array_merge($defaultStatuses, $dbStatuses));
+$statuses = array_values(array_diff($statuses, ['Arquivada']));
 $dataCadastroDe = $_GET['data_cadastro_de'] ?? null;
 $dataCadastroAte = $_GET['data_cadastro_ate'] ?? null;
 $dataModificacaoDe = $_GET['data_modificacao_de'] ?? null;
