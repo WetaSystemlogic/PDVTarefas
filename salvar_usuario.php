@@ -8,14 +8,14 @@ if ($nome === '') {
     exit;
 }
 
-$stmt = $pdo->prepare('SELECT COUNT(*) FROM responsaveis WHERE nome = ?');
+$stmt = $pdo->prepare('SELECT COUNT(*) FROM usuarios WHERE nome = ?');
 $stmt->execute([$nome]);
 if ($stmt->fetchColumn() > 0) {
-    echo json_encode(['success' => false, 'message' => 'Respons\u00e1vel j\u00e1 cadastrado.']);
+    echo json_encode(['success' => false, 'message' => 'Usu\u00e1rio j\u00e1 cadastrado.']);
     exit;
 }
 
-$stmt = $pdo->prepare('INSERT INTO responsaveis (nome) VALUES (?)');
+$stmt = $pdo->prepare('INSERT INTO usuarios (nome) VALUES (?)');
 $stmt->execute([$nome]);
 
 echo json_encode(['success' => true]);

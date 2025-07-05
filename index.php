@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'auth.php';
 
 // Busca tarefas do banco de dados
 function obterTarefasPorStatus(
@@ -13,7 +13,9 @@ function obterTarefasPorStatus(
   $sql =
       "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, t.tipo_atendimento, " .
       "r.nome AS responsavel, c.nome AS cliente, " .
-      "(SELECT COUNT(*) FROM comentarios com WHERE com.tarefa_id = t.id AND com.lido = 0) AS nao_lidos " .
+      "(SELECT COUNT(*) FROM comentarios com " .
+      " LEFT JOIN comentarios_lidos l ON com.id = l.comentario_id AND l.usuario_id = :uid " .
+      " WHERE com.tarefa_id = t.id AND com.usuario_id != :uid AND l.comentario_id IS NULL) AS nao_lidos " .
       "FROM tarefas t " .
       "LEFT JOIN responsaveis r ON t.responsavel_id = r.id " .
       "LEFT JOIN clientes c ON t.cliente_id = c.id " .
@@ -37,6 +39,7 @@ function obterTarefasPorStatus(
   }
   $sql .= " ORDER BY t.id DESC";
   $stmt = $pdo->prepare($sql);
+  $stmt->bindValue(':uid', $_SESSION['usuario_id']);
   $stmt->execute($params);
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
@@ -62,6 +65,7 @@ $arquivadas = obterTarefasPorStatus($pdo, 'Arquivada');
 
 $responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
 $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
+$usuarios = $pdo->query('SELECT id, nome FROM usuarios')->fetchAll(PDO::FETCH_ASSOC);
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -82,7 +86,8 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
         <div class="d-flex">
             <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#novaTarefaModal">Nova Tarefa</button>
             <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#cadastroModal">Cadastro</button>
-            <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#arquivadasModal">Arquivadas</button>
+            <button class="btn btn-light me-2" data-bs-toggle="modal" data-bs-target="#arquivadasModal">Arquivadas</button>
+            <a class="btn btn-danger" href="logout.php">Sair</a>
         </div>
     </div>
     </nav>
@@ -257,7 +262,8 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
       </div>
       <div class="modal-body text-center">
       <button class="btn btn-primary me-2" data-bs-target="#listaResponsavelModal" data-bs-toggle="modal" data-bs-dismiss="modal">Responsável</button>
-        <button class="btn btn-primary" data-bs-target="#listaClienteModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cliente</button>
+        <button class="btn btn-primary me-2" data-bs-target="#listaClienteModal" data-bs-toggle="modal" data-bs-dismiss="modal">Cliente</button>
+        <button class="btn btn-primary" data-bs-target="#listaUsuarioModal" data-bs-toggle="modal" data-bs-dismiss="modal">Usuário</button>
       </div>
     </div>
   </div>
@@ -294,7 +300,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
       </div>
     </div>
   </div>
-</div>
+  </div>
 
 <!-- Lista Clientes -->
 <div class="modal fade" id="listaClienteModal" tabindex="-1" aria-hidden="true">
@@ -335,8 +341,41 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
         </nav>
       </div>
     </div>
+    </div>
   </div>
+
+<!-- Lista Usuários -->
+<div class="modal fade" id="listaUsuarioModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Usuários</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="d-flex justify-content-end mb-2">
+          <button class="btn btn-primary" id="btnNovoUsuario">Novo</button>
+        </div>
+        <table class="table table-striped">
+          <thead>
+            <tr><th>Nome</th><th>Ação</th></tr>
+          </thead>
+          <tbody>
+            <?php foreach ($usuarios as $u): ?>
+            <tr data-id="<?= $u['id'] ?>" data-nome="<?= htmlspecialchars($u['nome']) ?>">
+              <td><?= htmlspecialchars($u['nome']) ?></td>
+              <td>
+                <button class="btn btn-sm btn-secondary btn-editar-usuario">Editar</button>
+                <button class="btn btn-sm btn-danger btn-excluir-usuario">Excluir</button>
+              </td>
+            </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
+</div>
 
 <!-- Modal Arquivadas -->
 <div class="modal fade" id="arquivadasModal" tabindex="-1" aria-hidden="true">
@@ -386,7 +425,7 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
       </div>
     </form>
   </div>
-</div>
+  </div>
 
 <!-- Modal Cliente -->
 <div class="modal fade" id="clienteModal" tabindex="-1" aria-hidden="true">
@@ -403,6 +442,30 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
           <label class="form-label">CNPJ</label>
           <input type="text" class="form-control" name="cnpj" required>
         </div>
+        <div class="mb-3">
+          <label class="form-label">Nome</label>
+          <input type="text" class="form-control" name="nome" required>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+      </div>
+    </form>
+  </div>
+  </div>
+
+<!-- Modal Usuário -->
+<div class="modal fade" id="usuarioModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form class="modal-content" id="formUsuario">
+      <div class="modal-header">
+        <h5 class="modal-title">Cadastrar Usuário</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div id="userAlert"></div>
+        <input type="hidden" name="id">
         <div class="mb-3">
           <label class="form-label">Nome</label>
           <input type="text" class="form-control" name="nome" required>
@@ -434,6 +497,6 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
 <script>
 var clientesData = <?php echo json_encode($clientes); ?>;
 </script>
-<script src="assets/js/app.js?v=1.0.1"></script>
+<script src="assets/js/app.js?v=1.0.2"></script>
 </body>
 </html>
