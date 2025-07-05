@@ -41,7 +41,7 @@ function atualizarKanban(callback){
 }
 
 $(function() {
-    setInterval(atualizarKanban, 5000); /*5000=Para Atualizar em 5 segunos */
+    setInterval(atualizarKanban, 5000000); /*5000=Para Atualizar em 5 segunos */
 
     $('#novaTarefaForm').on('submit', function(e){
         e.preventDefault();
