@@ -19,28 +19,33 @@ function obterTarefasPorStatus(
       "FROM tarefas t " .
       "LEFT JOIN responsaveis r ON t.responsavel_id = r.id " .
       "LEFT JOIN clientes c ON t.cliente_id = c.id " .
-      "WHERE t.status = ?";
-  $params = [$status];
+      "WHERE t.status = :status"; // Alterado de ? para :status
+  
+  $params = [
+      ':status' => $status,
+      ':uid' => $_SESSION['usuario_id']
+  ];
+
   if ($cadastroDe) {
-    $sql .= " AND date(t.created_at) >= ?";
-    $params[] = $cadastroDe;
+    $sql .= " AND date(t.created_at) >= :cadastroDe";
+    $params[':cadastroDe'] = $cadastroDe;
   }
   if ($cadastroAte) {
-    $sql .= " AND date(t.created_at) <= ?";
-    $params[] = $cadastroAte;
+    $sql .= " AND date(t.created_at) <= :cadastroAte";
+    $params[':cadastroAte'] = $cadastroAte;
   }
   if ($modificacaoDe) {
-    $sql .= " AND date(t.updated_at) >= ?";
-    $params[] = $modificacaoDe;
+    $sql .= " AND date(t.updated_at) >= :modificacaoDe";
+    $params[':modificacaoDe'] = $modificacaoDe;
   }
   if ($modificacaoAte) {
-    $sql .= " AND date(t.updated_at) <= ?";
-    $params[] = $modificacaoAte;
+    $sql .= " AND date(t.updated_at) <= :modificacaoAte";
+    $params[':modificacaoAte'] = $modificacaoAte;
   }
+
   $sql .= " ORDER BY t.id DESC";
   $stmt = $pdo->prepare($sql);
-  $stmt->bindValue(':uid', $_SESSION['usuario_id']);
-  $stmt->execute($params);
+  $stmt->execute($params); // Executa com o array de parâmetros nomeados
   return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -170,8 +175,8 @@ $usuarios = $pdo->query('SELECT id, nome FROM usuarios')->fetchAll(PDO::FETCH_AS
                         </div>
                         <h6 class="card-title mb-1 pe-4"><?= htmlspecialchars($tarefa['titulo']) ?></h6>
                         <p class="mb-1 small"><?= htmlspecialchars($detalhesPreview) ?></p>
-                        <p class="mb-0"><span class="badge bg-info text-dark badge-cliente">Cliente: <?= htmlspecialchars($tarefa['cliente'] ?? 'N/A') ?></span></p>
-                        <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? 'N/A') ?></span></p>
+                        <p class="mb-0"><span class="badge bg-info text-dark badge-cliente">Cliente: <?= htmlspecialchars($tarefa['cliente'] ?? '...') ?></span></p>
+                        <p class="mb-0"><span class="badge bg-secondary">Responsável: <?= htmlspecialchars($tarefa['responsavel'] ?? '...') ?></span></p>
                         <p class="mb-0 mt-1"><span class="badge bg-<?= $badge ?>"><?= $tempo ?></span></p>
                         <p class="mb-0"><span class="badge badge-atendimento">
                             <?= htmlspecialchars($tarefa['tipo_atendimento']) ?>
@@ -501,6 +506,6 @@ $usuarios = $pdo->query('SELECT id, nome FROM usuarios')->fetchAll(PDO::FETCH_AS
 <script>
 var clientesData = <?php echo json_encode($clientes); ?>;
 </script>
-<script src="assets/js/app.js?v=1.0.4"></script>
+<script src="assets/js/app.js?v=1.0.5"></script>
 </body>
 </html>
