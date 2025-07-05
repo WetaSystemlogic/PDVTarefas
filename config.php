@@ -11,6 +11,67 @@ date_default_timezone_set('America/Sao_Paulo');
 try {
     $pdo = new PDO('sqlite:' . $databasePath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Inicializa o banco caso as tabelas principais ainda não existam
+    $hasTarefas = $pdo
+        ->query("SELECT name FROM sqlite_master WHERE type='table' AND name='tarefas'")
+        ->fetchColumn();
+    if (!$hasTarefas) {
+        $queries = [
+            "CREATE TABLE IF NOT EXISTS responsaveis (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nome TEXT NOT NULL
+            );",
+            "CREATE TABLE IF NOT EXISTS usuarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                nome TEXT NOT NULL UNIQUE
+            );",
+            "CREATE TABLE IF NOT EXISTS clientes (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                cnpj TEXT UNIQUE,
+                nome TEXT NOT NULL
+            );",
+            "CREATE TABLE IF NOT EXISTS tarefas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                titulo TEXT NOT NULL,
+                detalhes TEXT,
+                responsavel_id INTEGER,
+                cliente_id INTEGER,
+                tipo_atendimento TEXT DEFAULT 'Remoto',
+                status TEXT NOT NULL DEFAULT 'A fazer',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );",
+            "CREATE TABLE IF NOT EXISTS subtarefas (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tarefa_id INTEGER NOT NULL,
+                descricao TEXT NOT NULL,
+                concluida INTEGER NOT NULL DEFAULT 0
+            );",
+            "CREATE TABLE IF NOT EXISTS comentarios (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                tarefa_id INTEGER NOT NULL,
+                usuario_id INTEGER,
+                texto TEXT NOT NULL,
+                imagem TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            );",
+            "CREATE TABLE IF NOT EXISTS comentarios_lidos (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                comentario_id INTEGER NOT NULL,
+                usuario_id INTEGER NOT NULL
+            );"
+        ];
+
+        foreach ($queries as $query) {
+            $pdo->exec($query);
+        }
+
+        // Usuário padrão para o primeiro acesso
+        if ($pdo->query('SELECT COUNT(*) FROM usuarios')->fetchColumn() == 0) {
+            $pdo->prepare('INSERT INTO usuarios (nome) VALUES (?)')->execute(['ADM']);
+        }
+    }
 } catch (PDOException $e) {
     die('Erro ao conectar ao banco de dados: ' . $e->getMessage());
 }
