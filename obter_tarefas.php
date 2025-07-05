@@ -116,3 +116,4 @@ foreach ($statuses as $status) {
 
 header('Content-Type: application/json');
 echo json_encode($result);
+exit;

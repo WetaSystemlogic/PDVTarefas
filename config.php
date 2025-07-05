@@ -57,4 +57,3 @@ if (date('N') == 6) { // 6 representa o sábado
     );
     $stmt->execute([date('Y-m-d H:i:s')]);
 }
-?>
