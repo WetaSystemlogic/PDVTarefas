@@ -1,5 +1,16 @@
+var detalhesRequest;
 function carregarDetalhes(id) {
-    $.get('detalhes_tarefa.php', {id: id}, function(data) {
+    // Cancela requisição anterior, se houver
+    if(detalhesRequest && detalhesRequest.readyState !== 4){
+        detalhesRequest.abort();
+    }
+    // Exibe placeholder enquanto os dados são carregados
+    $('#detalhesConteudo').html(
+        '<div class="modal-body p-3 text-center">' +
+        '<div class="spinner-border" role="status"></div>' +
+        '</div>'
+    );
+    detalhesRequest = $.get('detalhes_tarefa.php', {id: id}, function(data) {
         $('#detalhesConteudo').html(data);
         if (typeof Quill !== 'undefined') {
             window.quill = new Quill('#comentarioEditor', {theme: 'snow'});
