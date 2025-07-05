@@ -33,7 +33,7 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
     <input type="hidden" name="id" value="<?= $tarefa['id'] ?>">
     <div class="mb-3">
       <label class="form-label">Título</label>
-      <input type="text" class="form-control" id="detalhesTitulo" name="titulo" value="<?= htmlspecialchars($tarefa['titulo']) ?>" readonly>
+      <input type="text" class="form-control" id="detalhesTitulo" name="titulo" value="<?= htmlspecialchars($tarefa['titulo']) ?>">
     </div>
     <div class="mb-3">
       <label class="form-label">Detalhes</label>
