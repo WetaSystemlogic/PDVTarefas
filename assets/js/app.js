@@ -73,6 +73,20 @@ $(function() {
         }, 'json');
     });
 
+    $('#formUsuario').on('submit', function(e) {
+        e.preventDefault();
+        var id = $(this).find('input[name=id]').val();
+        var url = id ? 'atualizar_usuario.php' : 'salvar_usuario.php';
+        $.post(url, $(this).serialize(), function(resp) {
+            if (resp.success) {
+                $('#usuarioModal').modal('hide');
+                location.reload();
+            } else {
+                $('#userAlert').html('<div class="alert alert-warning alert-dismissible fade show" role="alert">'+resp.message+'<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>');
+            }
+        }, 'json');
+    });
+
     // Delegação para formulário de atualização de status
     $(document).on('submit', '#formStatus', function(e) {
         e.preventDefault();
@@ -362,5 +376,44 @@ $(function() {
         $('#clienteBusca').val('');
         $('#listaClienteModal tbody tr').show().removeClass('filtrado');
         atualizarPaginacao();
+    });
+
+    // Usuários
+    $(document).on('click', '#btnNovoUsuario', function(){
+        $('#formUsuario')[0].reset();
+        $('#formUsuario input[name=id]').val('');
+        $('#usuarioModal .modal-title').text('Cadastrar Usuário');
+        $('#listaUsuarioModal').modal('hide');
+        $('#usuarioModal').modal('show');
+    });
+
+    $(document).on('click', '.btn-editar-usuario', function(){
+        var tr = $(this).closest('tr');
+        $('#formUsuario input[name=id]').val(tr.data('id'));
+        $('#formUsuario input[name=nome]').val(tr.data('nome'));
+        $('#usuarioModal .modal-title').text('Editar Usuário');
+        $('#listaUsuarioModal').modal('hide');
+        $('#usuarioModal').modal('show');
+    });
+
+    $(document).on('click', '.btn-excluir-usuario', function(){
+        var tr = $(this).closest('tr');
+        var id = tr.data('id');
+        var nome = tr.data('nome');
+        Swal.fire({
+            title: 'Excluir "'+nome+'"?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não'
+        }).then(function(res){
+            if(res.isConfirmed){
+                $.post('excluir_usuario.php', {id:id}, function(resp){
+                    if(resp.success){
+                        location.reload();
+                    }
+                }, 'json');
+            }
+        });
     });
 });
