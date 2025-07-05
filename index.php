@@ -434,6 +434,6 @@ $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FE
 <script>
 var clientesData = <?php echo json_encode($clientes); ?>;
 </script>
-<script src="assets/js/app.js?v=1.0.0"></script>
+<script src="assets/js/app.js?v=1.0.1"></script>
 </body>
 </html>
