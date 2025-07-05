@@ -1,10 +1,12 @@
 <?php
-require 'config.php';
+require 'auth.php';
 
 function obterTarefasPorStatus($pdo, $status, $cadastroDe = null, $cadastroAte = null, $modificacaoDe = null, $modificacaoAte = null) {
     $sql = "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, t.tipo_atendimento, " .
            "r.nome AS responsavel, c.nome AS cliente, " .
-           "(SELECT COUNT(*) FROM comentarios com WHERE com.tarefa_id = t.id AND com.lido = 0) AS nao_lidos " .
+           "(SELECT COUNT(*) FROM comentarios com " .
+           " LEFT JOIN comentarios_lidos l ON com.id = l.comentario_id AND l.usuario_id = :uid " .
+           " WHERE com.tarefa_id = t.id AND com.usuario_id != :uid AND l.comentario_id IS NULL) AS nao_lidos " .
            "FROM tarefas t " .
            "LEFT JOIN responsaveis r ON t.responsavel_id = r.id " .
            "LEFT JOIN clientes c ON t.cliente_id = c.id " .
@@ -28,6 +30,7 @@ function obterTarefasPorStatus($pdo, $status, $cadastroDe = null, $cadastroAte =
     }
     $sql .= " ORDER BY t.id DESC";
     $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':uid', $_SESSION['usuario_id']);
     $stmt->execute($params);
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }

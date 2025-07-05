@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'auth.php';
 
 $titulo = $_POST['titulo'] ?? '';
 $detalhes = $_POST['detalhes'] ?? '';

@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'auth.php';
 
 $id = $_GET['id'] ?? 0;
 $stmt = $pdo->prepare('SELECT t.*, r.nome AS responsavel, c.nome AS cliente FROM tarefas t
@@ -20,7 +20,7 @@ $subtarefas = $sub->fetchAll(PDO::FETCH_ASSOC);
 $statuses = ['A fazer','Fazendo','Agendado','Aguardando','Finalizado'];
 $responsaveis = $pdo->query('SELECT id, nome FROM responsaveis')->fetchAll(PDO::FETCH_ASSOC);
 $clientes = $pdo->query('SELECT id, cnpj, nome FROM clientes')->fetchAll(PDO::FETCH_ASSOC);
-$com = $pdo->prepare('SELECT id, texto, imagem, created_at FROM comentarios WHERE tarefa_id = ? ORDER BY id DESC');
+$com = $pdo->prepare('SELECT c.id, c.texto, c.imagem, c.created_at, u.nome as usuario FROM comentarios c LEFT JOIN usuarios u ON c.usuario_id = u.id WHERE c.tarefa_id = ? ORDER BY c.id DESC');
 $com->execute([$id]);
 $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -110,7 +110,9 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
   <div id="listaComentarios">
     <?php foreach ($comentarios as $c): ?>
       <div class="border p-2 mb-2">
-        <div class="small text-muted"><?= date('d/m/Y H:i', strtotime($c['created_at'])) ?></div>
+        <div class="small text-muted">
+            <?= date('d/m/Y H:i', strtotime($c['created_at'])) ?> - <span class="fst-italic" style="font-size:0.85em;"><?= htmlspecialchars($c['usuario'] ?? '') ?></span>
+        </div>
         <div><?= $c['texto'] ?></div>
         <?php if (!empty($c['imagem'])): ?>
           <img src="<?= htmlspecialchars($c['imagem']) ?>" class="img-thumbnail comentario-thumb mt-1" style="max-width:100px;cursor:pointer;" data-img="<?= htmlspecialchars($c['imagem']) ?>">

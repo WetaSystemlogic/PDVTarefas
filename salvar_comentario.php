@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'auth.php';
 
 $tarefa_id = $_POST['tarefa_id'] ?? 0;
 $texto = $_POST['texto'] ?? '';
@@ -20,8 +20,11 @@ if (!empty($_FILES['imagem']['name'])) {
 
 if ($tarefa_id && $texto !== '') {
     $now = date('Y-m-d H:i:s');
-    $stmt = $pdo->prepare('INSERT INTO comentarios (tarefa_id, texto, imagem, created_at) VALUES (?, ?, ?, ?)');
-    $stmt->execute([$tarefa_id, $texto, $imagemPath, $now]);
+$userId = $_SESSION['usuario_id'];
+$stmt = $pdo->prepare('INSERT INTO comentarios (tarefa_id, usuario_id, texto, imagem, created_at) VALUES (?, ?, ?, ?, ?)');
+$stmt->execute([$tarefa_id, $userId, $texto, $imagemPath, $now]);
+$comentarioId = $pdo->lastInsertId();
+$pdo->prepare('INSERT INTO comentarios_lidos (comentario_id, usuario_id) VALUES (?, ?)')->execute([$comentarioId, $userId]);
     echo json_encode(['success' => true]);
 } else {
     echo json_encode(['success' => false]);

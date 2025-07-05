@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'auth.php';
 
 $id = $_POST['id'] ?? 0;
 $status = $_POST['status'] ?? '';

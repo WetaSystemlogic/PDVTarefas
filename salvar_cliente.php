@@ -1,5 +1,5 @@
 <?php
-require 'config.php';
+require 'auth.php';
 
 $cnpj = trim($_POST['cnpj'] ?? '');
 $nome = trim($_POST['nome'] ?? '');

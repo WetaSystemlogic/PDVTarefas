@@ -7,6 +7,10 @@ $queries = [
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         nome TEXT NOT NULL
     );",
+    "CREATE TABLE IF NOT EXISTS usuarios (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nome TEXT NOT NULL UNIQUE
+    );",
     "CREATE TABLE IF NOT EXISTS clientes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         cnpj TEXT UNIQUE,
@@ -32,10 +36,15 @@ $queries = [
     "CREATE TABLE IF NOT EXISTS comentarios (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tarefa_id INTEGER NOT NULL,
+        usuario_id INTEGER,
         texto TEXT NOT NULL,
         imagem TEXT,
-        lido INTEGER DEFAULT 0,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );",
+    "CREATE TABLE IF NOT EXISTS comentarios_lidos (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        comentario_id INTEGER NOT NULL,
+        usuario_id INTEGER NOT NULL
     );"
 ];
 
@@ -54,9 +63,18 @@ $colsComentarios = $pdo->query("PRAGMA table_info(comentarios)")->fetchAll(PDO::
 if (!in_array('imagem', $colsComentarios)) {
     $pdo->exec("ALTER TABLE comentarios ADD COLUMN imagem TEXT");
 }
+if (!in_array('usuario_id', $colsComentarios)) {
+    $pdo->exec("ALTER TABLE comentarios ADD COLUMN usuario_id INTEGER");
+}
 if (!in_array('lido', $colsComentarios)) {
     $pdo->exec("ALTER TABLE comentarios ADD COLUMN lido INTEGER DEFAULT 0");
 }
+
+$pdo->exec("CREATE TABLE IF NOT EXISTS comentarios_lidos (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    comentario_id INTEGER NOT NULL,
+    usuario_id INTEGER NOT NULL
+);");
 
 echo "Banco de dados inicializado com sucesso.\n";
 ?>

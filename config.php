@@ -1,6 +1,8 @@
 <?php
 // config.php - Conexão com o banco de dados SQLite
 
+session_start();
+
 $databasePath = __DIR__ . '/db/pdvtarefas.db';
 
 // Define o fuso-horário padrão para evitar divergência na gravação de datas
@@ -11,6 +13,18 @@ try {
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
     die('Erro ao conectar ao banco de dados: ' . $e->getMessage());
+}
+
+if (!isset($_SESSION['usuario_id']) && !empty($_COOKIE['manter_conectado'])) {
+    $uid = (int)$_COOKIE['manter_conectado'];
+    $stmt = $pdo->prepare('SELECT nome FROM usuarios WHERE id = ?');
+    if ($stmt->execute([$uid])) {
+        $nome = $stmt->fetchColumn();
+        if ($nome) {
+            $_SESSION['usuario_id'] = $uid;
+            $_SESSION['usuario_nome'] = $nome;
+        }
+    }
 }
 
 // Arquivamento automático das tarefas finalizadas no sábado
