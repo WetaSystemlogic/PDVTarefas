@@ -150,8 +150,8 @@ $usuarios = $pdo->query('SELECT id, nome FROM usuarios')->fetchAll(PDO::FETCH_AS
                         }
                     }
 
-                    $detalhesPreview = mb_strlen($tarefa['detalhes']) > 200
-                        ? mb_substr($tarefa['detalhes'], 0, 200) . '...'
+                    $detalhesPreview = strlen($tarefa['detalhes']) > 200
+                        ? substr($tarefa['detalhes'],0,200) . '...'
                         : $tarefa['detalhes'];
                 ?>
                 <div class="card mb-2 tarefa-card position-relative" data-id="<?= $tarefa['id'] ?>">
