@@ -52,6 +52,13 @@ foreach ($queries as $query) {
     $pdo->exec($query);
 }
 
+// Insere usuário padrão "ADM" caso não exista
+$stmt = $pdo->prepare('SELECT COUNT(*) FROM usuarios WHERE nome = ?');
+$stmt->execute(['ADM']);
+if ($stmt->fetchColumn() == 0) {
+    $pdo->prepare('INSERT INTO usuarios (nome) VALUES (?)')->execute(['ADM']);
+}
+
 // Adiciona coluna tipo_atendimento se não existir
 $cols = $pdo->query("PRAGMA table_info(tarefas)")->fetchAll(PDO::FETCH_COLUMN, 1);
 if (!in_array('tipo_atendimento', $cols)) {
