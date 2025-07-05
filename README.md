@@ -35,3 +35,8 @@ Quando a situação de uma tarefa é alterada para **Finalizado**, o indicador d
 
 ### Arquivar tarefas
 Tarefas finalizadas podem ser arquivadas clicando no ícone de arquivo no card. Arquivadas não aparecem no kanban e ficam listadas no botão **Arquivadas** no topo da página.
+
+### Arquivamento automático
+No sábado, o sistema verifica as tarefas com situação **Finalizado** e as move
+automaticamente para o status **Arquivada**. Essa verificação é realizada
+sempre que qualquer página carrega o arquivo `config.php`.
