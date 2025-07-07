@@ -49,6 +49,12 @@ $(function() {
         $('#cliente_id').val('');
     });
 
+    $('#novaTarefaModal').on('show.bs.modal', function(){
+        $('#novaTarefaForm')[0].reset();
+        $('#clienteDropdownBtn').text('Selecione...');
+        $('#cliente_id').val('');
+    });
+
     $('#novaTarefaForm').on('submit', function(e){
         e.preventDefault();
         $.post('salvar_tarefa.php', $(this).serialize(), function(){
