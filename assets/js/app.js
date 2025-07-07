@@ -43,6 +43,12 @@ function atualizarKanban(callback){
 $(function() {
     setInterval(atualizarKanban, 5000); /*5000=Para Atualizar em 5 segunos */
 
+    $('#novaTarefaModal').on('show.bs.modal', function(){
+        $('#novaTarefaForm')[0].reset();
+        $('#clienteDropdownBtn').text('Selecione...');
+        $('#cliente_id').val('');
+    });
+
     $('#novaTarefaForm').on('submit', function(e){
         e.preventDefault();
         $.post('salvar_tarefa.php', $(this).serialize(), function(){
