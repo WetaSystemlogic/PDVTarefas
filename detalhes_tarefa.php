@@ -103,6 +103,10 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
         <?php endforeach; ?>
       </select>
     </div>
+    <div class="mb-3" id="campoAgendamento" style="display:none;">
+      <label class="form-label">Data e Hora de Agendamento</label>
+      <input type="datetime-local" class="form-control" name="data_hora_agendamento" value="<?= $tarefa['data_hora_agendamento'] ? date('Y-m-d\TH:i', strtotime($tarefa['data_hora_agendamento'])) : '' ?>">
+    </div>
     <button type="submit" class="btn btn-secondary">Salvar Situação</button>
   </form>
 
@@ -135,14 +139,26 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
 </div>
 <script>
-$(function(){
-    $('#detClienteFiltro').on('keyup', function(){
-        var termo = $(this).val().toLowerCase();
-        $('#detClienteDropdownMenu a.dropdown-item').each(function(){
-            var txt = $(this).text().toLowerCase();
-            $(this).toggle(txt.indexOf(termo) !== -1);
-        });
-    });
+  $(function(){
+      $('#detClienteFiltro').on('keyup', function(){
+          var termo = $(this).val().toLowerCase();
+          $('#detClienteDropdownMenu a.dropdown-item').each(function(){
+              var txt = $(this).text().toLowerCase();
+              $(this).toggle(txt.indexOf(termo) !== -1);
+          });
+      });
+
+      function toggleAgendamento(){
+          var sel = $('#formStatus select[name=status]').val();
+          if(sel === 'Agendado'){
+              $('#campoAgendamento').show();
+          } else {
+              $('#campoAgendamento').hide();
+              $('#campoAgendamento input').val('');
+          }
+      }
+      toggleAgendamento();
+      $('#formStatus select[name=status]').on('change', toggleAgendamento);
 
     $('#detClienteDropdownMenu').on('click', 'a.dropdown-item', function(e){
         e.preventDefault();

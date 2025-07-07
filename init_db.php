@@ -23,6 +23,7 @@ $queries = [
         responsavel_id INTEGER,
         cliente_id INTEGER,
         tipo_atendimento TEXT DEFAULT 'Remoto',
+        data_hora_agendamento DATETIME,
         status TEXT NOT NULL DEFAULT 'A fazer',
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
         updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -70,6 +71,9 @@ if ($stmt->fetchColumn() == 0) {
 $cols = $pdo->query("PRAGMA table_info(tarefas)")->fetchAll(PDO::FETCH_COLUMN, 1);
 if (!in_array('tipo_atendimento', $cols)) {
     $pdo->exec("ALTER TABLE tarefas ADD COLUMN tipo_atendimento TEXT DEFAULT 'Remoto'");
+}
+if (!in_array('data_hora_agendamento', $cols)) {
+    $pdo->exec("ALTER TABLE tarefas ADD COLUMN data_hora_agendamento DATETIME");
 }
 
 // Adiciona colunas em comentarios se não existirem

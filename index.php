@@ -11,7 +11,7 @@ function obterTarefasPorStatus(
   $modificacaoAte = null
 ) {
   $sql =
-      "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, t.tipo_atendimento, " .
+      "SELECT t.id, t.titulo, t.detalhes, t.created_at, t.status, t.tipo_atendimento, t.data_hora_agendamento, " .
       "r.nome AS responsavel, c.nome AS cliente, " .
       "(SELECT COUNT(*) FROM comentarios com " .
       " LEFT JOIN comentarios_lidos l ON com.id = l.comentario_id AND l.usuario_id = :uid " .
