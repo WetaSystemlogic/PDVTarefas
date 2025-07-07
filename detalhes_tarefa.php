@@ -131,6 +131,7 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
 </div>
 <div class="modal-footer">
   <button type="button" class="btn btn-danger me-auto" id="btnExcluirTarefa">Excluir</button>
+  <button type="button" class="btn btn-info" id="btnVerAlteracoes">Ver Alterações</button>
   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
 </div>
 <script>

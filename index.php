@@ -495,6 +495,19 @@ $usuarios = $pdo->query('SELECT id, nome FROM usuarios')->fetchAll(PDO::FETCH_AS
       <!-- Conteúdo preenchido via Ajax -->
     </div>
   </div>
+  </div>
+
+<div class="modal fade" id="alteracoesModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Alterações</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="alteracoesConteudo">
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -506,6 +519,6 @@ $usuarios = $pdo->query('SELECT id, nome FROM usuarios')->fetchAll(PDO::FETCH_AS
 <script>
 var clientesData = <?php echo json_encode($clientes); ?>;
 </script>
-<script src="assets/js/app.js?v=1.0.6"></script>
+<script src="assets/js/app.js?v=1.0.7"></script>
 </body>
 </html>

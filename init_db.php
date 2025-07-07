@@ -45,6 +45,13 @@ $queries = [
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         comentario_id INTEGER NOT NULL,
         usuario_id INTEGER NOT NULL
+    );",
+    "CREATE TABLE IF NOT EXISTS alteracoes (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        tarefa_id INTEGER NOT NULL,
+        usuario_id INTEGER NOT NULL,
+        descricao TEXT NOT NULL,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );"
 ];
 
@@ -81,6 +88,13 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS comentarios_lidos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     comentario_id INTEGER NOT NULL,
     usuario_id INTEGER NOT NULL
+);");
+$pdo->exec("CREATE TABLE IF NOT EXISTS alteracoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tarefa_id INTEGER NOT NULL,
+    usuario_id INTEGER NOT NULL,
+    descricao TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );");
 
 echo "Banco de dados inicializado com sucesso.\n";

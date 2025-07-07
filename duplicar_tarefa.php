@@ -1,5 +1,6 @@
 <?php
 require 'auth.php';
+require 'funcoes.php';
 
 $id = $_POST['id'] ?? 0;
 
@@ -31,5 +32,8 @@ $stmt->execute([
     $now
 ]);
 
-echo json_encode(['success' => true, 'id' => $pdo->lastInsertId()]);
+$novoId = $pdo->lastInsertId();
+registrarAlteracao($pdo, $novoId, $_SESSION['usuario_id'], 'Tarefa duplicada');
+
+echo json_encode(['success' => true, 'id' => $novoId]);
 ?>

@@ -1,5 +1,6 @@
 <?php
 require 'auth.php';
+require 'funcoes.php';
 
 $titulo = $_POST['titulo'] ?? '';
 $detalhes = $_POST['detalhes'] ?? '';
@@ -16,6 +17,8 @@ $updated_at = $created_at;
 if ($titulo) {
     $stmt = $pdo->prepare('INSERT INTO tarefas (titulo, detalhes, responsavel_id, cliente_id, tipo_atendimento, status, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?)');
     $stmt->execute([$titulo, $detalhes, $responsavel_id, $cliente_id, $tipo_atendimento, 'A fazer', $created_at, $updated_at]);
+    $tarefaId = $pdo->lastInsertId();
+    registrarAlteracao($pdo, $tarefaId, $_SESSION['usuario_id'], 'Tarefa criada');
 }
 
 $isAjax = strtolower($_SERVER['HTTP_X_REQUESTED_WITH'] ?? '') === 'xmlhttprequest';
