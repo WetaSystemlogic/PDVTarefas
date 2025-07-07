@@ -98,6 +98,13 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS comentarios_lidos (
     comentario_id INTEGER NOT NULL,
     usuario_id INTEGER NOT NULL
 );");
+$pdo->exec("CREATE TABLE IF NOT EXISTS alteracoes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    tarefa_id INTEGER NOT NULL,
+    usuario_id INTEGER NOT NULL,
+    descricao TEXT NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);");
 
 if (!isset($_SESSION['usuario_id']) && !empty($_COOKIE['manter_conectado'])) {
     $uid = (int)$_COOKIE['manter_conectado'];
