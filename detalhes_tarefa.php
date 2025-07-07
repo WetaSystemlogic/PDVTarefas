@@ -105,7 +105,10 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
     </div>
     <div class="mb-3" id="campoAgendamento" style="display:none;">
       <label class="form-label">Data e Hora de Agendamento</label>
-      <input type="datetime-local" class="form-control" name="data_hora_agendamento" value="<?= $tarefa['data_hora_agendamento'] ? date('Y-m-d\TH:i', strtotime($tarefa['data_hora_agendamento'])) : '' ?>">
+      <div class="input-group">
+        <input type="datetime-local" class="form-control" name="data_hora_agendamento" value="<?= $tarefa['data_hora_agendamento'] ? date('Y-m-d\TH:i', strtotime($tarefa['data_hora_agendamento'])) : '' ?>">
+        <button class="btn btn-warning" type="button" id="btnEnviarMensagem">Enviar Mensagem</button>
+      </div>
     </div>
     <button type="submit" class="btn btn-secondary">Salvar Situação</button>
   </form>
@@ -159,6 +162,17 @@ $comentarios = $com->fetchAll(PDO::FETCH_ASSOC);
       }
       toggleAgendamento();
       $('#formStatus select[name=status]').on('change', toggleAgendamento);
+
+      $('#btnEnviarMensagem').on('click', function(){
+          var id = $('#formTarefaDetalhes input[name=id]').val();
+          $.post('send_message.php', {id: id}, function(resp){
+              if(resp.success){
+                  Swal.fire('Sucesso','Mensagem enviada com sucesso.','success');
+              } else {
+                  Swal.fire('Erro','Falha ao enviar mensagem: '+resp.message,'error');
+              }
+          }, 'json');
+      });
 
     $('#detClienteDropdownMenu').on('click', 'a.dropdown-item', function(e){
         e.preventDefault();
