@@ -8,6 +8,14 @@ $databasePath = __DIR__ . '/db/pdvtarefas.db';
 // Define o fuso-horário padrão para evitar divergência na gravação de datas
 date_default_timezone_set('America/Sao_Paulo');
 
+// Configurações da API de mensagens do WhatsApp
+$whatsappConfig = [
+    'endpoint'   => 'http://38.210.212.113:3000/client/sendMessage',
+    'sessionId'  => 'pvparaloja',
+    'apiKey'     => 'pdvparaloja_emws',
+    'numbers'    => ['559884029080', '559888992974']
+];
+
 try {
     $pdo = new PDO('sqlite:' . $databasePath);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -108,6 +116,12 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS alteracoes (
     usuario_id INTEGER NOT NULL,
     descricao TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);");
+
+$pdo->exec("CREATE TABLE IF NOT EXISTS lembretes_enviados (
+    tarefa_id INTEGER NOT NULL,
+    momento INTEGER NOT NULL,
+    PRIMARY KEY (tarefa_id, momento)
 );");
 
 if (!isset($_SESSION['usuario_id']) && !empty($_COOKIE['manter_conectado'])) {

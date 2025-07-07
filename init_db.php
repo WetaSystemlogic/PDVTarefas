@@ -53,6 +53,11 @@ $queries = [
         usuario_id INTEGER NOT NULL,
         descricao TEXT NOT NULL,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );",
+    "CREATE TABLE IF NOT EXISTS lembretes_enviados (
+        tarefa_id INTEGER NOT NULL,
+        momento INTEGER NOT NULL,
+        PRIMARY KEY (tarefa_id, momento)
     );"
 ];
 
@@ -99,6 +104,11 @@ $pdo->exec("CREATE TABLE IF NOT EXISTS alteracoes (
     usuario_id INTEGER NOT NULL,
     descricao TEXT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);");
+$pdo->exec("CREATE TABLE IF NOT EXISTS lembretes_enviados (
+    tarefa_id INTEGER NOT NULL,
+    momento INTEGER NOT NULL,
+    PRIMARY KEY (tarefa_id, momento)
 );");
 
 echo "Banco de dados inicializado com sucesso.\n";

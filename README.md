@@ -40,3 +40,8 @@ Tarefas finalizadas podem ser arquivadas clicando no ícone de arquivo no card. 
 No sábado, o sistema verifica as tarefas com situação **Finalizado** e as move
 automaticamente para o status **Arquivada**. Essa verificação é realizada
 sempre que qualquer página carrega o arquivo `config.php`.
+
+### Lembretes de agendamento
+O script `send_reminders.php` envia mensagens de WhatsApp quando uma tarefa
+agendada está a 30, 20 ou 10 minutos de iniciar. Para utilizá‑lo,
+agende a execução desse arquivo via `cron` ou ferramenta similar.
