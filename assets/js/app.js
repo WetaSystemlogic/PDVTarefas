@@ -163,6 +163,15 @@ $(function() {
         });
     });
 
+    $(document).on('click', '#btnVerAlteracoes', function(){
+        var id = $('#formTarefaDetalhes input[name=id]').val();
+        $('#alteracoesConteudo').html('<div class="text-center p-3"><div class="spinner-border"></div></div>');
+        $.get('obter_alteracoes.php', {id:id}, function(html){
+            $('#alteracoesConteudo').html(html);
+            $('#alteracoesModal').modal('show');
+        });
+    });
+
     // Drag and drop das tarefas
     var isDragging = false;
     $('.tarefa-col').sortable({
