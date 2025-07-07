@@ -43,5 +43,6 @@ sempre que qualquer página carrega o arquivo `config.php`.
 
 ### Lembretes de agendamento
 O script `send_reminders.php` envia mensagens de WhatsApp quando uma tarefa
-agendada está a 30, 20 ou 10 minutos de iniciar. Para utilizá‑lo,
-agende a execução desse arquivo via `cron` ou ferramenta similar.
+agendada está a 30, 20 ou 10 minutos de iniciar. As páginas do sistema agora
+chamam esse script automaticamente a cada minuto, mas é possível também
+agendá‑lo via `cron` ou ferramenta similar.

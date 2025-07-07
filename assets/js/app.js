@@ -42,6 +42,10 @@ function atualizarKanban(callback){
 
 $(function() {
     setInterval(atualizarKanban, 5000); /*5000=Para Atualizar em 5 segunos */
+    // Chama o script de lembretes a cada minuto
+    setInterval(function(){
+        $.get('send_reminders.php');
+    }, 60000);
 
     $('#novaTarefaModal').on('show.bs.modal', function(){
         $('#novaTarefaForm')[0].reset();
