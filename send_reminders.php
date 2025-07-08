@@ -16,7 +16,10 @@ foreach ($tarefas as $tarefa) {
             $stmt = $pdo->prepare('SELECT COUNT(*) FROM lembretes_enviados WHERE tarefa_id = ? AND momento = ?');
             $stmt->execute([$tarefa['id'], $min]);
             if (!$stmt->fetchColumn()) {
-                $msg = "*{$tarefa['titulo']}*\n*{$tarefa['detalhes']}*\nPassando para lembrar do agendamento da tarefa para *{$tarefa['data_hora_agendamento']}*, para o cliente *{$tarefa['cliente']}*, o atendimento vai ser *{$tarefa['tipo_atendimento']}*.";
+                $dataFormatada = $tarefa['data_hora_agendamento']
+                ? date('d/m/Y H:i', strtotime($tarefa['data_hora_agendamento']))
+                : '';
+                $msg = "*{$tarefa['titulo']}*\n*{$tarefa['detalhes']}*\nPassando para lembrar do agendamento da tarefa para *{$dataFormatada}*, para o cliente *{$tarefa['cliente']}*, o atendimento vai ser *{$tarefa['tipo_atendimento']}*.";
                 $erroEnvio = '';
                 $codigo = 0;
                 foreach ($whatsappConfig['numbers'] as $num) {
