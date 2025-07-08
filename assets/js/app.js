@@ -41,7 +41,7 @@ function atualizarKanban(callback){
 }
 
 $(function() {
-    setInterval(atualizarKanban, 5000000); /*5000=Para Atualizar em 5 segunos */
+    setInterval(atualizarKanban, 5000); /*5000=Para Atualizar em 5 segunos */
     // Chama o script de lembretes a cada minuto 60000=1 Minuto 60 Segundos
     setInterval(function(){
         $.get('send_reminders.php');
