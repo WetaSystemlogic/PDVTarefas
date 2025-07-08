@@ -11,7 +11,7 @@ date_default_timezone_set('America/Sao_Paulo');
 // Configurações da API de mensagens do WhatsApp
 $whatsappConfig = [
     'endpoint'   => 'http://38.210.212.113:3000/client/sendMessage',
-    'sessionId'  => 'pvparaloja',
+    'sessionId'  => 'pdvparaloja',
     'apiKey'     => 'pdvparaloja_emws',
     'numbers'    => ['559884029080', '559888992974']
 ];
