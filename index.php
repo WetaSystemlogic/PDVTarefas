@@ -519,6 +519,6 @@ $usuarios = $pdo->query('SELECT id, nome FROM usuarios')->fetchAll(PDO::FETCH_AS
 <script>
 var clientesData = <?php echo json_encode($clientes); ?>;
 </script>
-<script src="assets/js/app.js?v=1.0.10"></script>
+<script src="assets/js/app.js?v=1.0.11"></script>
 </body>
 </html>
